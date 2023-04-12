@@ -23,6 +23,7 @@ int statesprite= 0;
 int directionsprite = 0;
 int middlesprite = 0;
 int compteur = 0;
+int test =0;
 
 
 SDL_Rect src_bg = { 200,3, 168,216 }; // x,y, w,h (0,0) en haut a gauche
