@@ -1,3 +1,0 @@
-/home/mrfogo/Bureau/C/PacMan/build/CMakeFiles/Pacman.dir
-/home/mrfogo/Bureau/C/PacMan/build/CMakeFiles/edit_cache.dir
-/home/mrfogo/Bureau/C/PacMan/build/CMakeFiles/rebuild_cache.dir

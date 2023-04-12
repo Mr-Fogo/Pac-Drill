@@ -1,1 +1,0 @@
-/usr/bin/cc CMakeFiles/Pacman.dir/pacman.c.o -o Pacman  -L/usr/lib/x86_64-linux-gnu  -lSDL2 
