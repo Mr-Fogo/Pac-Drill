@@ -23,10 +23,11 @@ int statesprite= 0;
 int directionsprite = 0;
 int middlesprite = 0;
 int compteur = 0;
+bool colorofmap = false;
 
 
 SDL_Rect src_bg = { 200,3, 168,216 }; // x,y, w,h (0,0) en haut a gauche
-SDL_Rect bg = { 4,4, 672,864 }; // ici scale x4
+SDL_Rect bg = { 1,1, 672,864 }; // ici scale x4
 
 SDL_Rect ghost_r = { 3,123, 16,16 };
 SDL_Rect ghost_l = { 37,123, 16,16 };
@@ -75,24 +76,44 @@ SDL_Color GetPixelColor(const SDL_Surface* pSurface, int X, int Y)
 
     return Color;
 }
+void set_pixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
+{
+    Uint32 * const target_pixel = (Uint32 *) ((Uint8 *) surface->pixels
+                                              + y * surface->pitch
+                                              + x * surface->format->BytesPerPixel);
+    *target_pixel = pixel;
+}
+void setMapColor(SDL_Surface *surface,int r,int g,int b)
+{
+    for(int i = 0 ; i < 214 ; i++)
+    {
+        for (int j = 0 ; j < 166 ; j++)
+        {
+            if(map[i][j] == 'x')
+                set_pixel(surface,j+201,i+4,SDL_MapRGB(surface->format, r, g, b));
 
+        }
+    }
+}
 void createmap()
 {
     SDL_Color ColorT;
    for(int i = 0 ; i < 214 ; i++)
    {
+      //+ printf("\n");
        for (int j = 0 ; j < 166 ; j++)
        {
-          ColorT = GetPixelColor(plancheSprites,j+201,i+4);
-          //printf("Pixel Color : %d/%d/%d", ColorT.r,ColorT.g,ColorT.b);
-          if(ColorT.r == 32 && ColorT.g == 56 && ColorT.b == 236) {
-              map[i][j] = 'x';
-          }
-          else
-           map[i][j] = ' ';
-         // printf("%c",map[i][j]);
+           ColorT = GetPixelColor(plancheSprites,j+201,i+4);
+           //printf("Pixel Color : %d/%d/%d", ColorT.r,ColorT.g,ColorT.b);
+           if(ColorT.r == 32 && ColorT.g == 56 && ColorT.b == 236)
+           {
+               map[i][j] = 'x';
+           }
+           else
+               map[i][j] = ' ';
+
+           // printf("%c",map[i][j]);
        }
-      //+ printf("\n");
    }
 }
 
@@ -115,25 +136,25 @@ void draw()
 
     SDL_Rect* ghost_in = NULL;
     ghost_in = &(ghost_r);
-//    switch (count/128)
-//    {
-//        case 0:
-//            ghost_in = &(ghost_r);
-//            ghost.x++;
-//            break;
-//        case 1:
-//            ghost_in = &(ghost_d);
-//            ghost.y++;
-//            break;
-//        case 2:
-//            ghost_in = &(ghost_l);
-//            ghost.x--;
-//            break;
-//        case 3:
-//            ghost_in = &(ghost_u);
-//            ghost.y--;
-//            break;
-//    }
+    switch (count/128)
+    {
+        case 0:
+            ghost_in = &(ghost_r);
+            ghost.x++;
+            break;
+        case 1:
+            ghost_in = &(ghost_d);
+            ghost.y++;
+            break;
+        case 2:
+            ghost_in = &(ghost_l);
+            ghost.x--;
+            break;
+        case 3:
+            ghost_in = &(ghost_u);
+            ghost.y--;
+            break;
+    }
 
     SDL_Rect PacMan_in2 = *PacMan_in;
     SDL_BlitScaled(plancheSprites, &PacMan_in2, win_surf, &PacMan);
@@ -181,10 +202,20 @@ int main(int argc, char** argv)
         int nbk;
 
         const Uint8* keys = SDL_GetKeyboardState(&nbk);
-        if (keys[SDL_SCANCODE_ESCAPE])
-            quit = true;
+        if (keys[SDL_SCANCODE_SPACE])
+        {
+            if(colorofmap) {
+                setMapColor(plancheSprites, 254, 0, 0);
+                colorofmap = false;
+            }
+            else
+            {
+                setMapColor(plancheSprites, 32, 56, 236);
+                colorofmap = true;
+            }
+        }
         if (keys[SDL_SCANCODE_LEFT]) {
-            if(map[PacMan.x-24][PacMan.y-23] != 'x')
+            if(map[PacMan.x-1][PacMan.y] != 'x')
             {
                 PacMan.x--;
                 if (compteur % 2 == 0) {
@@ -211,7 +242,7 @@ int main(int argc, char** argv)
             }
         }
         if (keys[SDL_SCANCODE_RIGHT]) {
-            if(map[PacMan.x-22][PacMan.y-23] != 'x') {
+            if(map[PacMan.x+1][PacMan.y] != 'x') {
                 PacMan.x++;
                 if (compteur % 2 == 0) {
                     if (directionsprite == 0) {
@@ -239,7 +270,7 @@ int main(int argc, char** argv)
 
         }
         if(keys[SDL_SCANCODE_UP]) {
-            if(map[PacMan.x-23][PacMan.y-24] != 'x') {
+            if(map[PacMan.x][PacMan.y-1] != 'x') {
                 PacMan.y--;
                 if (compteur % 2 == 0) {
                     if (directionsprite == 0) {
@@ -265,7 +296,7 @@ int main(int argc, char** argv)
             }
         }
         if(keys[SDL_SCANCODE_DOWN]) {
-            if (map[PacMan.x-23][PacMan.y +22] != 'x') {
+            if (map[PacMan.x+1][PacMan.y] != 'x') {
                 PacMan.y++;
                 if (compteur % 2 == 0) {
                     if (directionsprite == 0) {
@@ -291,8 +322,9 @@ int main(int argc, char** argv)
             }
         }
 		draw();
-        //printf("Pacman_x : %d , Pacman_y : %d", PacMan.x,PacMan.y);
+        printf("Pacman_x : %d , Pacman_y : %d", PacMan.x,PacMan.y);
         //printf("Map[34][59] : %c",map[59][34]);
+        set_pixel(plancheSprites,PacMan.x+174, PacMan.y-23, SDL_MapRGB(plancheSprites->format, 0, 254, 0));
         compteur++;
         SDL_Delay(20); // ~50 fps use SDL_GetTicks64() pour plus de precision
 		SDL_UpdateWindowSurface(pWindow);
