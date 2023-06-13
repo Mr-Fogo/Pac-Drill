@@ -45,7 +45,7 @@ enum direction{
 
 // TODO boolean de direction sur x ou y
 // TODO Buffer de direction
-// TODO
+// TODOs
 
 bool moveX = false;
 bool moveY = false;
