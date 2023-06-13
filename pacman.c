@@ -27,7 +27,7 @@ bool colorofmap = false;
 
 
 SDL_Rect src_bg = { 200,3, 168,216 }; // x,y, w,h (0,0) en haut a gauche
-SDL_Rect bg = { 1,1, 672,864 }; // ici scale x4
+SDL_Rect bg = { 4,4, 672,864 }; // ici scale x4
 
 SDL_Rect ghost_r = { 3,123, 16,16 };
 SDL_Rect ghost_l = { 37,123, 16,16 };
