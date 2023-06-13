@@ -51,6 +51,50 @@ bool moveY = false;
 
 
 int count;
+char map[214][166];
+
+SDL_Color GetPixelColor(const SDL_Surface* pSurface, int X, int Y)
+{
+    // Bytes per pixel
+    const Uint8 Bpp = pSurface->format->BytesPerPixel;
+
+    /*
+    Retrieve the address to a specific pixel
+    pSurface->pixels	= an array containing the SDL_Surface' pixels
+    pSurface->pitch		= the length of a row of pixels (in bytes)
+    X and Y				= the offset on where on the image to retrieve the pixel, (0, 0) is in the upper left corner of the image
+    */
+    Uint8* pPixel = (Uint8*)pSurface->pixels + Y * pSurface->pitch + X * Bpp;
+
+    Uint32 PixelData = *(Uint32*)pPixel;
+
+    SDL_Color Color = {0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE};
+
+    // Retrieve the RGB values of the specific pixel
+    SDL_GetRGB(PixelData, pSurface->format, &Color.r, &Color.g, &Color.b);
+
+    return Color;
+}
+
+void createmap()
+{
+    SDL_Color ColorT;
+   for(int i = 0 ; i < 214 ; i++)
+   {
+       for (int j = 0 ; j < 166 ; j++)
+       {
+          ColorT = GetPixelColor(plancheSprites,j+201,i+4);
+          //printf("Pixel Color : %d/%d/%d", ColorT.r,ColorT.g,ColorT.b);
+          if(ColorT.r == 32 && ColorT.g == 56 && ColorT.b == 236) {
+              map[i][j] = 'x';
+          }
+          else
+           map[i][j] = ' ';
+         // printf("%c",map[i][j]);
+       }
+      //+ printf("\n");
+   }
+}
 
 void init()
 {
@@ -59,6 +103,8 @@ void init()
 
 	plancheSprites = SDL_LoadBMP("./pacman_sprites.bmp");
     count = 0;
+    createmap();
+
 }
 
 // fonction qui met à jour la surface de la fenetre "win_surf"
@@ -114,7 +160,9 @@ int main(int argc, char** argv)
 
 	init();
 
+
 	bool quit = false;
+
 	while (!quit)
 	{
 
@@ -136,136 +184,115 @@ int main(int argc, char** argv)
         if (keys[SDL_SCANCODE_ESCAPE])
             quit = true;
         if (keys[SDL_SCANCODE_LEFT]) {
-            PacMan.x--;
-            PacMan.x--;
-            PacMan.x--;
-            PacMan.x--;
-            if(compteur%2 == 0) {
-                if (directionsprite == 0)
-                {
-                    if (middlesprite == 1) {
-                        PacMan_in = &(pacman_l);
-                        middlesprite = 0;
-                        directionsprite = 1;
-                    }
-                    else {
-                        PacMan_in = &(pacman_c);
-                        middlesprite = 1;
-                    }
-                }
-                else
-                {
-                    if (middlesprite == 1) {
-                        PacMan_in = &(pacman_l);
-                        middlesprite = 0;
-                        directionsprite = 0;
-                    }
-                    else {
-                        PacMan_in = &(pacman_fl);
-                        middlesprite = 1;
+            if(map[PacMan.x-24][PacMan.y-23] != 'x')
+            {
+                PacMan.x--;
+                if (compteur % 2 == 0) {
+                    if (directionsprite == 0) {
+                        if (middlesprite == 1) {
+                            PacMan_in = &(pacman_l);
+                            middlesprite = 0;
+                            directionsprite = 1;
+                        } else {
+                            PacMan_in = &(pacman_c);
+                            middlesprite = 1;
+                        }
+                    } else {
+                        if (middlesprite == 1) {
+                            PacMan_in = &(pacman_l);
+                            middlesprite = 0;
+                            directionsprite = 0;
+                        } else {
+                            PacMan_in = &(pacman_fl);
+                            middlesprite = 1;
+                        }
                     }
                 }
             }
         }
         if (keys[SDL_SCANCODE_RIGHT]) {
-            PacMan.x++;
-            PacMan.x++;
-            PacMan.x++;
-            PacMan.x++;
-            if(compteur%2 == 0) {
-                if (directionsprite == 0)
-                {
-                    if (middlesprite == 1) {
-                        PacMan_in = &(pacman_r);
-                        middlesprite = 0;
-                        directionsprite = 1;
-                    }
-                    else {
-                        PacMan_in = &(pacman_c);
-                        middlesprite = 1;
-                    }
-                }
-                else
-                {
-                    if (middlesprite == 1) {
-                        PacMan_in = &(pacman_r);
-                        middlesprite = 0;
-                        directionsprite = 0;
-                    }
-                    else {
-                        PacMan_in = &(pacman_fr);
-                        middlesprite = 1;
+            if(map[PacMan.x-22][PacMan.y-23] != 'x') {
+                PacMan.x++;
+                if (compteur % 2 == 0) {
+                    if (directionsprite == 0) {
+                        if (middlesprite == 1) {
+                            PacMan_in = &(pacman_r);
+                            middlesprite = 0;
+                            directionsprite = 1;
+                        } else {
+                            PacMan_in = &(pacman_c);
+                            middlesprite = 1;
+                        }
+                    } else {
+                        if (middlesprite == 1) {
+                            PacMan_in = &(pacman_r);
+                            middlesprite = 0;
+                            directionsprite = 0;
+                        } else {
+                            PacMan_in = &(pacman_fr);
+                            middlesprite = 1;
+                        }
                     }
                 }
             }
 
+
         }
         if(keys[SDL_SCANCODE_UP]) {
-            PacMan.y--;
-            PacMan.y--;
-            PacMan.y--;
-            PacMan.y--;
-            if(compteur%2 == 0) {
-                if (directionsprite == 0)
-                {
-                    if (middlesprite == 1) {
-                        PacMan_in = &(pacman_u);
-                        middlesprite = 0;
-                        directionsprite = 1;
-                    }
-                    else {
-                        PacMan_in = &(pacman_c);
-                        middlesprite = 1;
-                    }
-                }
-                else
-                {
-                    if (middlesprite == 1) {
-                        PacMan_in = &(pacman_u);
-                        middlesprite = 0;
-                        directionsprite = 0;
-                    }
-                    else {
-                        PacMan_in = &(pacman_fu);
-                        middlesprite = 1;
+            if(map[PacMan.x-23][PacMan.y-24] != 'x') {
+                PacMan.y--;
+                if (compteur % 2 == 0) {
+                    if (directionsprite == 0) {
+                        if (middlesprite == 1) {
+                            PacMan_in = &(pacman_u);
+                            middlesprite = 0;
+                            directionsprite = 1;
+                        } else {
+                            PacMan_in = &(pacman_c);
+                            middlesprite = 1;
+                        }
+                    } else {
+                        if (middlesprite == 1) {
+                            PacMan_in = &(pacman_u);
+                            middlesprite = 0;
+                            directionsprite = 0;
+                        } else {
+                            PacMan_in = &(pacman_fu);
+                            middlesprite = 1;
+                        }
                     }
                 }
             }
         }
         if(keys[SDL_SCANCODE_DOWN]) {
-            PacMan.y++;
-            PacMan.y++;
-            PacMan.y++;
-            PacMan.y++;
-            if(compteur%2 == 0) {
-                if (directionsprite == 0)
-                {
-                    if (middlesprite == 1) {
-                        PacMan_in = &(pacman_d);
-                        middlesprite = 0;
-                        directionsprite = 1;
-                    }
-                    else {
-                        PacMan_in = &(pacman_c);
-                        middlesprite = 1;
-                    }
-                }
-                else
-                {
-                    if (middlesprite == 1) {
-                        PacMan_in = &(pacman_d);
-                        middlesprite = 0;
-                        directionsprite = 0;
-                    }
-                    else {
-                        PacMan_in = &(pacman_fd);
-                        middlesprite = 1;
+            if (map[PacMan.x-23][PacMan.y +22] != 'x') {
+                PacMan.y++;
+                if (compteur % 2 == 0) {
+                    if (directionsprite == 0) {
+                        if (middlesprite == 1) {
+                            PacMan_in = &(pacman_d);
+                            middlesprite = 0;
+                            directionsprite = 1;
+                        } else {
+                            PacMan_in = &(pacman_c);
+                            middlesprite = 1;
+                        }
+                    } else {
+                        if (middlesprite == 1) {
+                            PacMan_in = &(pacman_d);
+                            middlesprite = 0;
+                            directionsprite = 0;
+                        } else {
+                            PacMan_in = &(pacman_fd);
+                            middlesprite = 1;
+                        }
                     }
                 }
             }
         }
 		draw();
-
+        //printf("Pacman_x : %d , Pacman_y : %d", PacMan.x,PacMan.y);
+        //printf("Map[34][59] : %c",map[59][34]);
         compteur++;
         SDL_Delay(20); // ~50 fps use SDL_GetTicks64() pour plus de precision
 		SDL_UpdateWindowSurface(pWindow);
