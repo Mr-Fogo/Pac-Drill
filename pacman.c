@@ -19,6 +19,10 @@ SDL_Rect pacman_fl = { 61,90, 12,14};
 SDL_Rect pacman_fu = { 93,92, 14,12};
 SDL_Rect pacman_fd = { 127,95, 14,12 };
 
+
+int PacmanVisualX;
+int PacmanVisualY;
+
 int directionsprite = 0;
 int middlesprite = 0;
 int compteur = 0;
@@ -55,6 +59,8 @@ int y_testPixel = 14;
 int count;
 char map[214][166];
 
+
+
 SDL_Color GetPixelColor(const SDL_Surface* pSurface, int X, int Y)
 {
     // Bytes per pixel
@@ -84,6 +90,7 @@ void set_pixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
                                               + x * surface->format->BytesPerPixel);
     *target_pixel = pixel;
 }
+
 void setMapColor(SDL_Surface *surface,int r,int g,int b)
 {
     for(int i = 0 ; i < 214 ; i++)
@@ -249,15 +256,16 @@ void movePacman(int t,char d)
 void createmap()
 {
     SDL_Color ColorT;
+    //Ligne
    for(int i = 0 ; i < 214 ; i++)
    {
       //+ printf("\n");
+      //Colonne
        for (int j = 0 ; j < 166 ; j++)
        {
            ColorT = GetPixelColor(plancheSprites,j+201,i+4);
            //printf("Pixel Color : %d/%d/%d", ColorT.r,ColorT.g,ColorT.b);
-           if(ColorT.r == 32 && ColorT.g == 56 && ColorT.b == 236)
-           {
+           if(ColorT.r == 32 && ColorT.g == 56 && ColorT.b == 236) {
                map[i][j] = 'x';
            }
            else
@@ -331,7 +339,10 @@ int main(int argc, char** argv)
     }
 
 	init();
+    PacMan.x = 25;
+    PacMan.y = 25;
 
+    PacMan_in = &(pacman_c);
 
 	bool quit = false;
 	while (!quit)
@@ -348,7 +359,8 @@ int main(int argc, char** argv)
 			}
 		}
         int nbk;
-
+        PacmanVisualX = PacMan.x/4;
+        PacmanVisualY = PacMan.y/4;
         const Uint8* keys = SDL_GetKeyboardState(&nbk);
         if (keys[SDL_SCANCODE_SPACE])
         {
@@ -395,3 +407,4 @@ int main(int argc, char** argv)
     SDL_Quit();
     return 0;
 }
+
