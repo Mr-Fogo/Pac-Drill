@@ -3,7 +3,7 @@
 //
 
 #include "map.h"
-#define MUS_PATH "PacManSong.wav"
+#define MUS_PATH "../dua.wav"
 //char map[214][166];
 
 void createmap(SDL_Surface* plancheSprites, char map[214][166])
@@ -18,7 +18,12 @@ void createmap(SDL_Surface* plancheSprites, char map[214][166])
         {
             ColorT = GetPixelColor(plancheSprites,j+201,i+4);
             //printf("Pixel Color : %d/%d/%d", ColorT.r,ColorT.g,ColorT.b);
-            if(ColorT.r == 32 && ColorT.g == 56 && ColorT.b == 236) {
+            if(ColorT.r == 32 && ColorT.g == 56 && ColorT.b == 236)
+            {
+                map[i][j] = 'x';
+            }
+            else if(ColorT.r == 0 && ColorT.g == 0 && ColorT.b == 1)
+            {
                 map[i][j] = 'x';
             }
             else
@@ -81,7 +86,7 @@ void setMapColor(SDL_Surface *surface,int r,int g,int b, char map[214][166])
     {
         for (int j = 0 ; j < 166 ; j++)
         {
-            if(map[i][j] == 'x')
+            if(map[i][j] == 'x' || map[i][j] == 'w' )
                 set_pixel(surface,j+201,i+4,SDL_MapRGB(surface->format, r, g, b));
 
         }
