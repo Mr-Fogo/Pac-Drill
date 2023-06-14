@@ -11,7 +11,7 @@ find_package(SDL2_image REQUIRED)
 find_package(SDL2_gfx REQUIRED)
 find_package(SDL2_ttf REQUIRED)
 
-add_executable(${PROJECT_NAME} "")
+add_executable(${PROJECT_NAME} "" main.c main.h fantome.c fantome.h pacman.h map.c map.h)
 target_sources(${PROJECT_NAME} PRIVATE pacman.c)
 target_include_directories(${PROJECT_NAME} PRIVATE ${SDL2_INCLUDE_DIRS})
 target_compile_definitions(${PROJECT_NAME} PRIVATE "SDL_MAIN_HANDLED")
