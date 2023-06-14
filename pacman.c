@@ -57,6 +57,10 @@ enum direction{
     DOWN
 };
 
+struct fantomas{
+
+};
+
 
 // TODO boolean de direction sur x ou y
 // TODO Buffer de direction
