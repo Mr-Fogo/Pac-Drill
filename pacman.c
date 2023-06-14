@@ -5,6 +5,18 @@
 SDL_Window* pWindow = NULL;
 SDL_Surface* win_surf = NULL;
 SDL_Surface* plancheSprites = NULL;
+#define MUS_PATH "dua.wav"
+
+bool isMalveillanceMax = false;
+
+void my_audio_callback(void *userdata, Uint8 *stream, int len);
+
+// variable declarations
+static Uint8 *audio_pos; // global pointer to the audio buffer to be played
+static Uint32 audio_len; // remaining length of the sample we have to play
+
+
+
 
 
 SDL_Rect PacMan = { 34,34, 32,32 };
@@ -129,6 +141,21 @@ void movePixelTest(int x,int y)
 
     }
 }
+bool contact(int y,int x)
+{
+    for (int i = 0; i < 1; i++)
+    {
+        for (int j = 0; j < 1; j++)
+        {
+            if (map[PacmanVisualY-y-j][PacmanVisualX-x-i] == 'x')
+            {
+                return false;
+            }
+
+        }
+    }
+    return true;
+}
 void movePacman(int t,char d)
 {
     bool animation = true;
@@ -136,6 +163,7 @@ void movePacman(int t,char d)
     {
         if(d == 'l')
         {
+            //if(contact(0,-1))
             if(map[PacmanVisualY][PacmanVisualX-1] != 'x')
             {
                 PacMan.x--;
@@ -165,7 +193,8 @@ void movePacman(int t,char d)
         }
         else if(d == 'r')
         {
-            if(map[PacmanVisualY][PacmanVisualX+1] != 'x') {
+            //if(contact(0,1)) {
+            if(map[PacmanVisualY][PacmanVisualX+1] != 'x'){
                 PacMan.x++;
 
                 if (compteur % 2 == 0 && animation) {
@@ -194,7 +223,9 @@ void movePacman(int t,char d)
         }
         else if (d == 'u')
         {
-            if(map[PacmanVisualY-1][PacmanVisualX] != 'x') {
+           // if(contact(-1,0)) {
+            if(map[PacmanVisualY-1][PacmanVisualX] != 'x')
+            {
                 PacMan.y--;
                 if (compteur % 2 == 0 && animation) {
                     if (directionsprite == 0) {
@@ -223,7 +254,9 @@ void movePacman(int t,char d)
         }
         else if (d == 'd')
         {
-            if (map[PacmanVisualY+1][PacmanVisualX] != 'x') {
+            //if (contact(1,0)) {
+            if(map[PacmanVisualY+1][PacmanVisualX] != 'x')
+            {
                 PacMan.y++;
                 if (compteur % 2 == 0 && animation ) {
                     if (directionsprite == 0) {
@@ -328,15 +361,72 @@ void draw()
 
 }
 
+void setMapTheme()
+{
+    if(!isMalveillanceMax) {
+        if (MUS_PATH == "coco.wav") {
+            setMapColor(plancheSprites, 255, 192, 203);
+        } else if (MUS_PATH == "PacManSong.wav") {
+            setMapColor(plancheSprites, 255, 0, 0);
+        } else if (MUS_PATH == "dua.wav") {
+            setMapColor(plancheSprites, PacMan.x * 1 % 255, PacMan.x + 150 * 1 % 255, PacMan.x + PacMan.y * 1 % 255);
+        }
+    }
+    else
+        setMapColor(plancheSprites, 255, 0, 0);
+}
 
-
+//void swapSong(char path[] )
+//{
+//    MUS_PATH = path;
+//    SDL_CloseAudio();
+//    SDL_FreeWAV(wav_buffer);
+//    SDL_LoadWAV(MUS_PATH, &wav_spec, &wav_buffer, &wav_length);
+//    SDL_OpenAudio(&wav_spec, NULL);
+//    SDL_PauseAudio(0);
+//}
 int main(int argc, char** argv)
 {
-    if (SDL_Init(SDL_INIT_VIDEO) != 0 )
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0 )
     {
 		fprintf(stderr,"Echec de l'initialisation de la SDL %s",SDL_GetError());
        	return 1;
     }
+// local variables
+    static Uint32 wav_length; // length of our sample
+    static Uint8 *wav_buffer; // buffer containing our audio file
+    static SDL_AudioSpec wav_spec; // the specs of our piece of music
+
+
+    /* Load the WAV */
+    // the specs, length and buffer of our wav are filled
+    if( SDL_LoadWAV(MUS_PATH, &wav_spec, &wav_buffer, &wav_length) == NULL ){
+        return 1;
+    }
+    // set the callback function
+    wav_spec.callback = my_audio_callback;
+    wav_spec.userdata = NULL;
+    // set our global static variables
+    audio_pos = wav_buffer; // copy sound buffer
+    audio_len = wav_length; // copy file length
+
+    /* Open the audio device */
+    if ( SDL_OpenAudio(&wav_spec, NULL) < 0 ){
+        fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
+        exit(-1);
+    }
+
+    /* Start playing */
+    SDL_PauseAudio(0);
+
+    // wait until we're don't playing
+//    while ( audio_len > 0 ) {
+//        SDL_Delay(100);
+//    }
+
+    // shut everything down
+    //SDL_CloseAudio();
+    //SDL_FreeWAV(wav_buffer);
 
 	init();
     PacMan.x = 25;
@@ -345,6 +435,7 @@ int main(int argc, char** argv)
     PacMan_in = &(pacman_c);
 
 	bool quit = false;
+   // setMapTheme();
 	while (!quit)
 	{
 		SDL_Event event;
@@ -358,21 +449,19 @@ int main(int argc, char** argv)
 			default: break;
 			}
 		}
+        setMapTheme();
         int nbk;
         PacmanVisualX = PacMan.x/4;
         PacmanVisualY = PacMan.y/4;
         const Uint8* keys = SDL_GetKeyboardState(&nbk);
         if (keys[SDL_SCANCODE_SPACE])
         {
-            if(colorofmap) {
-                setMapColor(plancheSprites, 254, 0, 0);
-                colorofmap = false;
-            }
+            if(isMalveillanceMax)
+                isMalveillanceMax = false;
             else
-            {
-                setMapColor(plancheSprites, 32, 56, 236);
-                colorofmap = true;
-            }
+                isMalveillanceMax = true;
+           // swapSong("coco.wav");
+
         }
         if (keys[SDL_SCANCODE_ESCAPE])
         {
@@ -408,3 +497,15 @@ int main(int argc, char** argv)
     return 0;
 }
 
+void my_audio_callback(void *userdata, Uint8 *stream, int len) {
+
+    if (audio_len ==0)
+        return;
+
+    len = ( len > audio_len ? audio_len : len );
+    SDL_memcpy (stream, audio_pos, len);                     // simply copy from one buffer into the other
+    //SDL_MixAudio(stream, audio_pos, len, SDL_MIX_MAXVOLUME);// mix from one buffer into another
+
+    audio_pos += len;
+    audio_len -= len;
+}
