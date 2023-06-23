@@ -36,5 +36,7 @@ void moveFantomeAleatoirement(char map[][166]);
 void drawFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites);
 bool contactMur(int y,int x,char map[][166]);
 void changeDirection();
+enum direction* directionsDisponibles(int y, int x, char map[][166], int *nbDirections);
+
 
 #endif //PACMAN_FANTOME_H

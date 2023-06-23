@@ -76,6 +76,8 @@ void movePacman(int t,char d, char (*map)[255][166],int compteur)
                 //if(map[PacmanVisualY][PacmanVisualX-1] != 'x')
             {
                 PacMan.x--;
+                deletePacManFromGrid(map);
+                (*map)[PacmanVisualY][PacmanVisualX]='P';
                 //map[PacMan.x][PacMan.y]= (char) "P";
                 if (compteur % 2 == 0 && animation) {
                     if (directionsprite == 0) {
@@ -108,7 +110,10 @@ void movePacman(int t,char d, char (*map)[255][166],int compteur)
                 //if(map[PacmanVisualY][PacmanVisualX+1] != 'x'){
                 PacMan.x++;
                 //PacmanInGridX++;
-                (*map)[PacmanVisualY][PacmanVisualX]='p';
+                deletePacManFromGrid(map);
+                (*map)[PacmanVisualY][PacmanVisualX]='P';
+                // placer le pacman dans la grille
+
                 if (compteur % 2 == 0 && animation) {
                     if (directionsprite == 0) {
                         if (middlesprite == 1) {
@@ -138,6 +143,8 @@ void movePacman(int t,char d, char (*map)[255][166],int compteur)
             if(contact(-1,0,map)) {
                 // if(map[PacmanVisualY-1][PacmanVisualX] != 'x'){
                 PacMan.y--;
+                deletePacManFromGrid(map);
+                (*map)[PacmanVisualY][PacmanVisualX]='P';
                 if (compteur % 2 == 0 && animation) {
                     if (directionsprite == 0) {
                         if (middlesprite == 1) {
@@ -168,6 +175,8 @@ void movePacman(int t,char d, char (*map)[255][166],int compteur)
             if (contact(1,0,map)) {
                 //if(map[PacmanVisualY+1][PacmanVisualX] != 'x') {
                 PacMan.y++;
+                deletePacManFromGrid(map);
+                (*map)[PacmanVisualY][PacmanVisualX]='P';
                 if (compteur % 2 == 0 && animation ) {
                     if (directionsprite == 0) {
                         if (middlesprite == 1) {

@@ -98,26 +98,27 @@ int main(int argc, char** argv)
 //            // swapSong("coco.wav");
 //
 //        }
+
         if (keys[SDL_SCANCODE_ESCAPE])
         {
             showMap(map);
         }
         if (keys[SDL_SCANCODE_LEFT]) {
             //movePixelTest(-1,0);
-            movePacman(4,'l',map,compteur);
+            movePacman(4,'l',&map,compteur);
         }
         if (keys[SDL_SCANCODE_RIGHT])
         {
             //movePixelTest(1,0);
-            movePacman(4,'r',map,compteur);
+            movePacman(4,'r',&map,compteur);
         }
         if(keys[SDL_SCANCODE_UP]) {
             //movePixelTest(0,-1);
-            movePacman(4,'u',map,compteur);
+            movePacman(4,'u',&map,compteur);
         }
         if(keys[SDL_SCANCODE_DOWN]) {
             // movePixelTest(0,1);
-            movePacman(4,'d',map,compteur);
+            movePacman(4,'d',&map,compteur);
         }
         moveFantomeAleatoirement(map);
         //changeDirection();

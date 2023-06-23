@@ -106,3 +106,17 @@ void setMapTheme(SDL_Surface* plancheSprites, bool isMalveillanceMax, char map[]
     else
         setMapColor(plancheSprites, 255, 0, 0,map);
 }
+
+// Supprimer PacMan de la map
+void deletePacManFromGrid(char (*map)[255][166])
+{
+    for(int i = 0 ; i < 214 ; i++)
+    {
+        for (int j = 0 ; j < 166 ; j++)
+        {
+            if((*map)[i][j] == 'P') {
+                (*map)[i][j] = ' ';
+            }
+        }
+    }
+}

@@ -91,17 +91,35 @@ void moveFantomeAleatoirement(char map[][166])
     FantomVisualX=ghost.x/4;
     FantomVisualY=ghost.y/4;
 
-    //currentDirection=changeDirection();
+///*    int *nbdir;
+//    enum direction *listeDirections = directionsDisponibles(0, 0, map, &nbdir);
+//
+//    printf("Directions disponibles : ");
+//    for (int i = 0; i < nbdir; i++) {
+//        switch (listeDirections[i]) {
+//            case RIGHT:
+//                printf("RIGHT ");
+//                break;
+//            case LEFT:
+//                printf("LEFT ");
+//                break;
+//            case UP:
+//                printf("UP ");
+//                break;
+//            case DOWN:
+//                printf("DOWN ");
+//                break;
+//        }
+//    }*/
+        //currentDirection=changeDirection();
 
-    if (currentDirection==RIGHT)
-    {
-        if(contactMur(0,1,map)) {
-            ghost.x++;
-            //isBlocked = false;
+        if (currentDirection == RIGHT) {
+            if (contactMur(0, 1, map)) {
+                ghost.x++;
+                //isBlocked = false;
+            } else
+                isBlocked = true;
         }
-        else
-            isBlocked=true;
-    }
     else if (currentDirection==LEFT)
     {
         if(contactMur(0,-1,map)) {
@@ -139,8 +157,38 @@ void changeDirection()
 
 }
 
-void findPath()
-{
+enum direction* directionsDisponibles(int y, int x, char map[][166], int *nbDirections) {
+    enum direction *listeDirections = malloc(
+            4 * sizeof(enum direction)); // Allouer de la mémoire pour la liste des directions
+    *nbDirections = 0;  // Initialisation du nombre de directions disponibles
 
+    // Vérification de chaque direction
+    for (enum direction dir = RIGHT; dir <= DOWN; dir++) {
+        int newY = 0;
+        int newX = 0;
+
+        // Mise à jour des coordonnées selon la direction
+        switch (dir) {
+            case RIGHT:
+                newX += 1;
+                break;
+            case LEFT:
+                newX -= 1;
+                break;
+            case UP:
+                newY -= 1;
+                break;
+            case DOWN:
+                newY += 1;
+                break;
+        }
+
+        // Vérification de contact avec un mur
+        if (!contactMur(newY, newX, map)) {
+            listeDirections[*nbDirections] = dir;  // Ajout de la direction à la liste
+            (*nbDirections)++;  // Incrémentation du nombre de directions disponibles
+        }
+    }
+
+    return listeDirections;
 }
-
