@@ -6,7 +6,7 @@
 #define MUS_PATH "../dua.wav"
 //char map[214][166];
 
-void createmap(SDL_Surface* plancheSprites, char map[214][166])
+void createmap(SDL_Surface* plancheSprites, char map[][166])
 {
     SDL_Color ColorT;
     //Ligne
@@ -34,7 +34,7 @@ void createmap(SDL_Surface* plancheSprites, char map[214][166])
     }
 }
 
-void showMap(char map[214][166])
+void showMap(char map[][166])
 {
     system("clear");
     for(int i = 0 ; i < 214 ; i++)
@@ -80,7 +80,7 @@ void set_pixel(SDL_Surface *surface, int x, int y, Uint32 pixel)
     *target_pixel = pixel;
 }
 
-void setMapColor(SDL_Surface *surface,int r,int g,int b, char map[214][166])
+void setMapColor(SDL_Surface *surface,int r,int g,int b, char map[][166])
 {
     for(int i = 0 ; i < 214 ; i++)
     {
@@ -92,7 +92,7 @@ void setMapColor(SDL_Surface *surface,int r,int g,int b, char map[214][166])
         }
     }
 }
-void setMapTheme(SDL_Surface* plancheSprites, bool isMalveillanceMax, char map[214][166])
+void setMapTheme(SDL_Surface* plancheSprites, bool isMalveillanceMax, char map[][166])
 {
     if(!isMalveillanceMax) {
         if (MUS_PATH == "coco.wav") {

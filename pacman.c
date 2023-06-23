@@ -23,17 +23,15 @@ int PacmanVisualY;
 int directionsprite = 0;
 int middlesprite = 0;
 
+
+int PacmanInGridX =7;
+int PacmanInGridY =7;
 bool colorofmap = false;
 
+char pac= 'p';
 
 
 
-enum direction{
-    RIGHT,
-    LEFT,
-    UP,
-    DOWN
-};
 
 
 // TODO boolean de direction sur x ou y
@@ -45,7 +43,7 @@ bool moveY = false;
 
 //int count;
 
-bool contact(int y,int x,char map[214][166])
+bool contact(int y,int x,char map[][166])
 {
     bool contact = true;
     for (int i = -1; i <= 8; i++)
@@ -62,7 +60,7 @@ bool contact(int y,int x,char map[214][166])
     return contact;
 }
 
-void movePacman(int t,char d, char map[214][166],int compteur)
+void movePacman(int t,char d, char (*map)[255][166],int compteur)
 {
     PacmanVisualX = PacMan.x/4;
     PacmanVisualY = PacMan.y/4;
@@ -78,6 +76,7 @@ void movePacman(int t,char d, char map[214][166],int compteur)
                 //if(map[PacmanVisualY][PacmanVisualX-1] != 'x')
             {
                 PacMan.x--;
+                //map[PacMan.x][PacMan.y]= (char) "P";
                 if (compteur % 2 == 0 && animation) {
                     if (directionsprite == 0) {
                         if (middlesprite == 1) {
@@ -104,10 +103,12 @@ void movePacman(int t,char d, char map[214][166],int compteur)
         }
         else if(d == 'r')
         {
+
             if(contact(0,1,map)) {
                 //if(map[PacmanVisualY][PacmanVisualX+1] != 'x'){
                 PacMan.x++;
-
+                //PacmanInGridX++;
+                (*map)[PacmanVisualY][PacmanVisualX]='p';
                 if (compteur % 2 == 0 && animation) {
                     if (directionsprite == 0) {
                         if (middlesprite == 1) {

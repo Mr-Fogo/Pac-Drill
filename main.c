@@ -16,18 +16,11 @@ bool isMalveillanceMax = false;
 SDL_Rect src_bg = { 201,4, 166,214 }; // x,y, w,h (0,0) en haut a gauche
 SDL_Rect bg = { 4,4, 664,856 }; // ici scale x4
 
-SDL_Rect ghost_r = { 3,123, 16,16 };
-SDL_Rect ghost_l = { 37,123, 16,16 };
-SDL_Rect ghost_d = { 105,123, 16,16 };
-SDL_Rect ghost_u = { 71,123, 16,16 };
-SDL_Rect ghost = { 34,34, 32,32 };
-
 // variables pour le son
 static Uint8 *audio_pos; // global pointer to the audio buffer to be played
 static Uint32 audio_len; // remaining length of the sample we have to play
 
 
-int count;
 int compteur = 0;
 char map[214][166];
 
@@ -126,8 +119,11 @@ int main(int argc, char** argv)
             // movePixelTest(0,1);
             movePacman(4,'d',map,compteur);
         }
+        moveFantomeAleatoirement(map);
+        //changeDirection();
         draw();
         drawPacman(win_surf,plancheSprites);
+        drawFantom(win_surf,plancheSprites);
         //printf("Map[0][10] : %c",map[0][10]);
         compteur++;
         SDL_Delay(20); // ~50 fps use SDL_GetTicks64() pour plus de precision
@@ -143,7 +139,6 @@ void init()
     win_surf = SDL_GetWindowSurface(pWindow);
 
     plancheSprites = SDL_LoadBMP("./pacman_sprites.bmp");
-    count = 0;
     createmap(plancheSprites, map);
     setMapTheme(plancheSprites,isMalveillanceMax,map);
 
@@ -154,38 +149,7 @@ void draw()
 {
     SDL_SetColorKey(plancheSprites, false, 0);
     SDL_BlitScaled(plancheSprites, &src_bg, win_surf, &bg);
-
-    SDL_Rect* ghost_in = NULL;
-    ghost_in = &(ghost_r);
-    switch (count/128)
-    {
-        case 0:
-            ghost_in = &(ghost_r);
-            ghost.x++;
-            break;
-        case 1:
-            ghost_in = &(ghost_d);
-            ghost.y++;
-            break;
-        case 2:
-            ghost_in = &(ghost_l);
-            ghost.x--;
-            break;
-        case 3:
-            ghost_in = &(ghost_u);
-            ghost.y--;
-            break;
-    }
-
-    count =(count+1)%(512);
-
-    SDL_Rect ghost_in2 = *ghost_in;
-    if ((count/4)%2)
-        ghost_in2.x += 17;
-
     SDL_SetColorKey(plancheSprites, true, 0);
-    SDL_BlitScaled(plancheSprites, &ghost_in2, win_surf, &ghost);
-
 }
 
 void my_audio_callback(void *userdata, Uint8 *stream, int len) {

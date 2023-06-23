@@ -10,7 +10,9 @@
 #ifndef PACMAN_PACMAN_H
 #define PACMAN_PACMAN_H
 
-void movePacman(int t,char d, char map[214][166],int compteur);
+//SDL_Rect PacMan = { 32,32, 32,32 };
+
+void movePacman(int t,char d, char (*map)[255][166],int compteur);
 void drawPacman(SDL_Surface* win_surf, SDL_Surface* plancheSprites);
-bool contact(int y,int x,char map[214][166]);
+bool contact(int y,int x,char map[][166]);
 #endif //PACMAN_PACMAN_H
