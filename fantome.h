@@ -22,9 +22,6 @@ typedef struct Fantome{
     int x;
 } Fantome;
 
-
-
-
 enum direction{
     RIGHT,
     LEFT,
@@ -33,18 +30,42 @@ enum direction{
 };
 
 
-void initFantome();
-void moveFantome(char map[][166]);
-void drawFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites);
+struct Sprite
+{
+    int numero;
+    int VisualPositionX;
+    int VisualPositionY;
+//    int gridPositionX;
+//    int gridPositionY;
+    enum direction currentDirection;
+    SDL_Rect *rects;
+    //SDL_Rect lastRect;
+    SDL_Rect ghost;
+    //MazeElement ghostElement;
+};
+
+
+
+
+
+
+void initFantom();
+void moveFantome(char map[][166], struct Sprite *sprite);
+void moveAllFantom(char map[][166]);
+void drawFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites, struct Sprite *sprite);
 bool contactMur(int y,int x,char map[][166]);
 void changeDirection();
-enum direction* directionsDisponibles(int y, int x, char map[][166], int *nbDirections);
+enum direction* directionsDisponibles(int y, int x, char map[][166], int *nbDirections, struct Sprite *sprite);
 void changementDirection(char map[][166]);
-enum direction choisirDirection(enum direction *listeDirections, int nbDirections);
+enum direction choisirDirectionAlea(enum direction *listeDirections, int nbDirections);
 void touch(char dir);
 enum direction getOppositeDirection(enum direction dir);
-double calculeDistanceEntre2points(int pacmanX, int pacmanY, int fantomeX, int fantomeY);
-enum direction trouverDistancePlusCourte(int pacmanX, int pacmanY, char map[][166]);
+double calculeDistanceEntre2points(int pacmanX, int pacmanY, int sourceX, int sourceY);
+enum direction trouverDistancePlusCourte(int pacmanX, int pacmanY, char map[][166], struct Sprite *sprite);
+void exportSprites(SDL_Rect *srcRect, SDL_Rect *destRect, int count, int xStep, int yStep);
+void drawAllFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites);
+void freeGhosts();
+
 
 
 
