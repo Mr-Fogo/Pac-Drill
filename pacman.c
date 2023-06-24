@@ -4,31 +4,38 @@
 
 #include "pacman.h"
 
-SDL_Rect PacMan = { 32,32, 32,32 };
-SDL_Rect* PacMan_in = &(PacMan);
-SDL_Rect pacman_r= {21,90,14,14};
-SDL_Rect pacman_l= {47,90,14,14};
-SDL_Rect pacman_u= {76,90,14,14};
-SDL_Rect pacman_d= {110,91,14,14};
-SDL_Rect pacman_c = { 4,90, 14,14};
-SDL_Rect pacman_fr = { 36,90, 12,14 };
-SDL_Rect pacman_fl = { 61,90, 12,14};
-SDL_Rect pacman_fu = { 93,92, 14,12};
-SDL_Rect pacman_fd = { 127,95, 14,12 };
+SDL_Rect PacMan = {32, 32, 32, 32};
+SDL_Rect *PacMan_in = &(PacMan);
+SDL_Rect pacman_r = {21, 90, 14, 14};
+SDL_Rect pacman_l = {47, 90, 14, 14};
+SDL_Rect pacman_u = {76, 90, 14, 14};
+SDL_Rect pacman_d = {110, 91, 14, 14};
+SDL_Rect pacman_c = {4, 90, 14, 14};
+SDL_Rect pacman_fr = {36, 90, 12, 14};
+SDL_Rect pacman_fl = {61, 90, 12, 14};
+SDL_Rect pacman_fu = {93, 92, 14, 12};
+SDL_Rect pacman_fd = {127, 95, 14, 12};
+SDL_Rect pacman_nextAnimation = {0, 0, 0, 0};
+SDL_Rect pacman_nextAnimationfull = {0, 0, 0, 0};
 
 
+struct Coordonees {
+    int x;
+    int y;
+};
 int PacmanVisualX;
 int PacmanVisualY;
-
+int x_actuel;
+int y_actuel;
 int directionsprite = 0;
 int middlesprite = 0;
-
-
-int PacmanInGridX =7;
-int PacmanInGridY =7;
+int compteur = 0;
+bool animation = false;
+int PacmanInGridX = 7;
+int PacmanInGridY = 7;
 bool colorofmap = false;
 
-char pac= 'p';
+char pac = 'p';
 
 
 
@@ -43,15 +50,12 @@ bool moveY = false;
 
 //int count;
 
-bool contact(int y,int x,char (*map)[255][166])
-{
+bool contactwithwall(int y, int x, char (*map)[255][166]) {
     bool contact = true;
-    for (int i = -1; i <= 8; i++)
-    {
-        for (int j = -1; j <= 8; j++)
-        {
-            if ((*map)[PacmanVisualY+y+i][PacmanVisualX+x+j] == 'x' || (*map)[PacmanVisualY+y+i][PacmanVisualX+x+j] == 'w' )
-            {
+    for (int i = -1; i <= 8; i++) {
+        for (int j = -1; j <= 8; j++) {
+            if ((*map)[PacmanVisualY + y + i][PacmanVisualX + x + j] == 'x' ||
+                (*map)[PacmanVisualY + y + i][PacmanVisualX + x + j] == 'w') {
                 return false;
             }
 
@@ -60,156 +64,99 @@ bool contact(int y,int x,char (*map)[255][166])
     return contact;
 }
 
-void movePacman(int t,char d, char (*map)[255][166],int compteur)
-{
-    PacmanVisualX = PacMan.x/4;
-    PacmanVisualY = PacMan.y/4;
-
-    PacMan_in = &(pacman_c);
-
-    bool animation = true;
-    for (int i = 0; i < t; i++)
-    {
-        if(d == 'l')
-        {
-            if(contact(0,-1,map))
-                //if(map[PacmanVisualY][PacmanVisualX-1] != 'x')
-            {
-                PacMan.x--;
-                deletePacManFromGrid(map);
-                (*map)[PacmanVisualY][PacmanVisualX]='P';
-                //map[PacMan.x][PacMan.y]= (char) "P";
-                if (compteur % 2 == 0 && animation) {
-                    if (directionsprite == 0) {
-                        if (middlesprite == 1) {
-                            PacMan_in = &(pacman_l);
-                            middlesprite = 0;
-                            directionsprite = 1;
-                        } else {
-                            PacMan_in = &(pacman_c);
-                            middlesprite = 1;
-                        }
-                    } else {
-                        if (middlesprite == 1) {
-                            PacMan_in = &(pacman_l);
-                            middlesprite = 0;
-                            directionsprite = 0;
-                        } else {
-                            PacMan_in = &(pacman_fl);
-                            middlesprite = 1;
-                        }
-                    }
-                    animation = false;
-                }
+void handleAnimation() {
+    if (x_actuel == 0 && y_actuel == 1) {
+        pacman_nextAnimation = pacman_d;
+        pacman_nextAnimationfull = pacman_fd;
+    } else if (x_actuel == 0 && y_actuel == -1) {
+        pacman_nextAnimation = pacman_u;
+        pacman_nextAnimationfull = pacman_fu;
+    } else if (x_actuel == 1 && y_actuel == 0) {
+        pacman_nextAnimation = pacman_r;
+        pacman_nextAnimationfull = pacman_fr;
+    } else if (x_actuel == -1 && y_actuel == 0) {
+        pacman_nextAnimation = pacman_l;
+        pacman_nextAnimationfull = pacman_fl;
+    } else {
+        pacman_nextAnimation = pacman_c;
+    }
+    if (compteur % 2 == 0 && animation) {
+        if (directionsprite == 0) {
+            if (middlesprite == 1) {
+                PacMan_in = &(pacman_nextAnimation);
+                middlesprite = 0;
+                directionsprite = 1;
+            } else {
+                PacMan_in = &(pacman_c);
+                middlesprite = 1;
+            }
+        } else {
+            if (middlesprite == 1) {
+                PacMan_in = &(pacman_nextAnimation);
+                middlesprite = 0;
+                directionsprite = 0;
+            } else {
+                PacMan_in = &(pacman_nextAnimationfull);
+                middlesprite = 1;
             }
         }
-        else if(d == 'r')
-        {
+        animation = false;
+    } else
+        animation = true;
+}
 
-            if(contact(0,1,map)) {
-                //if(map[PacmanVisualY][PacmanVisualX+1] != 'x'){
-                PacMan.x++;
-                //PacmanInGridX++;
-                deletePacManFromGrid(map);
-                (*map)[PacmanVisualY][PacmanVisualX]='P';
-                // placer le pacman dans la grille
+int contactwithdollars(char (*map)[255][166]) {
+    struct Coordonees dollards[4];
+    int nbdollars = 0;
+    for (int i = -1; i <= 8; i++) {
+        for (int j = -1; j <= 8; j++) {
+            if ((*map)[PacmanVisualY + i][PacmanVisualX + j] == 'd') {
+                dollards[nbdollars].x = PacmanVisualX + j;
+                dollards[nbdollars].y = PacmanVisualY + i;
+                nbdollars++;
+            }
 
-                if (compteur % 2 == 0 && animation) {
-                    if (directionsprite == 0) {
-                        if (middlesprite == 1) {
-                            PacMan_in = &(pacman_r);
-                            middlesprite = 0;
-                            directionsprite = 1;
-                        } else {
-                            PacMan_in = &(pacman_c);
-                            middlesprite = 1;
-                        }
-                    } else {
-                        if (middlesprite == 1) {
-                            PacMan_in = &(pacman_r);
-                            middlesprite = 0;
-                            directionsprite = 0;
-                        } else {
-                            PacMan_in = &(pacman_fr);
-                            middlesprite = 1;
-                        }
-                    }
-                    animation = false;
-                }
-            }
         }
-        else if (d == 'u')
-        {
-            if(contact(-1,0,map)) {
-                // if(map[PacmanVisualY-1][PacmanVisualX] != 'x'){
-                PacMan.y--;
-                deletePacManFromGrid(map);
-                (*map)[PacmanVisualY][PacmanVisualX]='P';
-                if (compteur % 2 == 0 && animation) {
-                    if (directionsprite == 0) {
-                        if (middlesprite == 1) {
-                            PacMan_in = &(pacman_u);
-                            middlesprite = 0;
-                            directionsprite = 1;
-                        } else {
-                            PacMan_in = &(pacman_c);
-                            middlesprite = 1;
-                        }
-                    } else {
-                        if (middlesprite == 1) {
-                            PacMan_in = &(pacman_u);
-                            middlesprite = 0;
-                            directionsprite = 0;
-                        } else {
-                            PacMan_in = &(pacman_fu);
-                            middlesprite = 1;
-                        }
-                    }
-                    animation = false;
-                }
-
-            }
+    }
+    if (nbdollars == 4) {
+        for (int i = 0; i < 4; i++) {
+            (*map)[dollards[i].y][dollards[i].x] = ' ';
         }
-        else if (d == 'd')
-        {
-            if (contact(1,0,map)) {
-                //if(map[PacmanVisualY+1][PacmanVisualX] != 'x') {
-                PacMan.y++;
-                deletePacManFromGrid(map);
-                (*map)[PacmanVisualY][PacmanVisualX]='P';
-                if (compteur % 2 == 0 && animation ) {
-                    if (directionsprite == 0) {
-                        if (middlesprite == 1) {
-                            PacMan_in = &(pacman_d);
-                            middlesprite = 0;
-                            directionsprite = 1;
-                        } else {
-                            PacMan_in = &(pacman_c);
-                            middlesprite = 1;
-                        }
-                    } else {
-                        if (middlesprite == 1) {
-                            PacMan_in = &(pacman_d);
-                            middlesprite = 0;
-                            directionsprite = 0;
-                        } else {
-                            PacMan_in = &(pacman_fd);
-                            middlesprite = 1;
-                        }
-                    }
-                    animation = false;
-                }
-            }
-        }
+        return 100;
+    } else {
+        return 0;
     }
 }
 
-void drawPacman(SDL_Surface* win_surf, SDL_Surface* plancheSprites)
-{
+void movePacmanbutBetter(int vitesse, char (*map)[255][166], int x, int y) {
+    PacmanVisualX = PacMan.x / 4;
+    PacmanVisualY = PacMan.y / 4;
+    PacMan_in = &(pacman_c);
+    for (int i = 0; i < vitesse; i++) {
+        compteur++;
+        if (contactwithwall(y, x, map)) {
+            PacMan.x += x;
+            PacMan.y += y;
+            deletePacManFromGrid(map);
+            (*map)[PacmanVisualY + y][PacmanVisualX + x] = 'P';
+            x_actuel = x;
+            y_actuel = y;
+        } else if (contactwithwall(y_actuel, x_actuel, map)) {
+            PacMan.x += x_actuel;
+            PacMan.y += y_actuel;
+            deletePacManFromGrid(map);
+            (*map)[PacmanVisualY + y_actuel][PacmanVisualX + x_actuel] = 'P';
+        }
+    }
+    handleAnimation();
+}
+
+
+void drawPacman(SDL_Surface *win_surf, SDL_Surface *plancheSprites) {
     SDL_Rect PacMan_in2 = *PacMan_in;
     SDL_BlitScaled(plancheSprites, &PacMan_in2, win_surf, &PacMan);
     //printf("\nPacman_x : %d , Pacman_y : %d", PacMan.x,PacMan.y);
-    set_pixel(plancheSprites,PacmanVisualX+201, PacmanVisualY+4, SDL_MapRGB(plancheSprites->format, 0, 254, 0));
+    //set_pixel(plancheSprites, PacmanVisualX + 201, PacmanVisualY + 4, SDL_MapRGB(plancheSprites->format, 0, 254, 0));
 }
 
 //void swapSong(char path[] )

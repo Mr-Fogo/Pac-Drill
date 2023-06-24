@@ -11,8 +11,9 @@
 #define PACMAN_PACMAN_H
 
 //SDL_Rect PacMan = { 32,32, 32,32 };
-
+void movePacmanbutBetter(int vitesse, char (*map)[255][166], int x, int y);
 void movePacman(int t,char d, char (*map)[255][166],int compteur);
+int contactwithdollars(char (*map)[255][166]);
 void drawPacman(SDL_Surface* win_surf, SDL_Surface* plancheSprites);
 bool contact(int y,int x,char (*map)[255][166]);
 

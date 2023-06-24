@@ -2,6 +2,8 @@
 // Created by hamza on 6/14/23.
 //
 
+
+#include <SDL2/SDL_ttf.h>
 #include "main.h"
 #include "map.h"
 #include "pacman.h"
@@ -12,7 +14,7 @@ SDL_Surface* win_surf = NULL;
 SDL_Surface* plancheSprites = NULL;
 #define MUS_PATH "../dua.wav"
 bool isMalveillanceMax = false;
-
+int score = 0;
 SDL_Rect src_bg = { 201,4, 166,214 }; // x,y, w,h (0,0) en haut a gauche
 SDL_Rect bg = { 4,4, 664,856 }; // ici scale x4
 
@@ -20,8 +22,6 @@ SDL_Rect bg = { 4,4, 664,856 }; // ici scale x4
 static Uint8 *audio_pos; // global pointer to the audio buffer to be played
 static Uint32 audio_len; // remaining length of the sample we have to play
 
-
-int compteur = 0;
 char map[214][166];
 
 int main(int argc, char** argv)
@@ -71,6 +71,7 @@ int main(int argc, char** argv)
 
 
     bool quit = false;
+    struct nextDirection nextDirection = {0,0};
     // setMapTheme();
     while (!quit)
     {
@@ -85,7 +86,6 @@ int main(int argc, char** argv)
                 default: break;
             }
         }
-        setMapTheme(plancheSprites, isMalveillanceMax, map);
         int nbk;
 
         const Uint8* keys = SDL_GetKeyboardState(&nbk);
@@ -104,36 +104,35 @@ int main(int argc, char** argv)
             showMap(map);
         }
         if (keys[SDL_SCANCODE_LEFT]) {
-            //movePixelTest(-1,0);
-            movePacman(4,'l',map,compteur);
-            //touch('l');
+            nextDirection.x = -1;
+            nextDirection.y = 0;
         }
         if (keys[SDL_SCANCODE_RIGHT])
         {
-            //movePixelTest(1,0);
-            movePacman(4,'r',map,compteur);
-            //touch('r');
+            nextDirection.x = 1;
+            nextDirection.y = 0;
         }
         if(keys[SDL_SCANCODE_UP]) {
-            //movePixelTest(0,-1);
-            movePacman(4,'u',map,compteur);
-            //touch('u');
+            nextDirection.x = 0;
+            nextDirection.y = -1;
         }
         if(keys[SDL_SCANCODE_DOWN]) {
-            // movePixelTest(0,1);
-            movePacman(4,'d',map,compteur);
-            //touch('d');
+            nextDirection.x = 0;
+            nextDirection.y = 1;
         }
+        movePacmanbutBetter(4,map,nextDirection.x,nextDirection.y);
         moveFantome(map);
         changementDirection(map);
+        score += contactwithdollars(map);
         //changeDirection();
         draw();
         drawPacman(win_surf,plancheSprites);
         drawFantom(win_surf,plancheSprites);
         //printf("Map[0][10] : %c",map[0][10]);
-        compteur++;
         SDL_Delay(20); // ~50 fps use SDL_GetTicks64() pour plus de precision
         SDL_UpdateWindowSurface(pWindow);
+        updateMap(plancheSprites,map);
+        setMapTheme(plancheSprites,map);
     }
 
     SDL_Quit();
@@ -146,7 +145,7 @@ void init()
 
     plancheSprites = SDL_LoadBMP("./pacman_sprites.bmp");
     createmap(plancheSprites, map);
-    setMapTheme(plancheSprites,isMalveillanceMax,map);
+
 
 }
 
