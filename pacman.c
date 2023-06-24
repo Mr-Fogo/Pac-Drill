@@ -43,14 +43,14 @@ bool moveY = false;
 
 //int count;
 
-bool contact(int y,int x,char map[][166])
+bool contact(int y,int x,char (*map)[255][166])
 {
     bool contact = true;
     for (int i = -1; i <= 8; i++)
     {
         for (int j = -1; j <= 8; j++)
         {
-            if (map[PacmanVisualY+y+i][PacmanVisualX+x+j] == 'x' || map[PacmanVisualY+y+i][PacmanVisualX+x+j] == 'w' )
+            if ((*map)[PacmanVisualY+y+i][PacmanVisualX+x+j] == 'x' || (*map)[PacmanVisualY+y+i][PacmanVisualX+x+j] == 'w' )
             {
                 return false;
             }

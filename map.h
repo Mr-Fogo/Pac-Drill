@@ -16,6 +16,9 @@ void setMapColor(SDL_Surface *surface,int r,int g,int b,char map[][166]);
 void setMapTheme(SDL_Surface* plancheSprites, bool isMalveillanceMax,char map[][166]);
 void deletePacManFromGrid(char (*map)[255][166]);
 void updateGrid();
+int getPacmanX(char (*map)[255][166]);
+int getPacmanY(char (*map)[255][166]);
+
 
 
 

@@ -2,11 +2,13 @@
 // Created by hamza on 6/14/23.
 //
 
+#include "map.h"
 #include <SDL.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <time.h>
 #include <stdlib.h>
+#include <math.h>
 
 #ifndef PACMAN_FANTOME_H
 #define PACMAN_FANTOME_H
@@ -32,11 +34,19 @@ enum direction{
 
 
 void initFantome();
-void moveFantomeAleatoirement(char map[][166]);
+void moveFantome(char map[][166]);
 void drawFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites);
 bool contactMur(int y,int x,char map[][166]);
 void changeDirection();
 enum direction* directionsDisponibles(int y, int x, char map[][166], int *nbDirections);
+void changementDirection(char map[][166]);
+enum direction choisirDirection(enum direction *listeDirections, int nbDirections);
+void touch(char dir);
+enum direction getOppositeDirection(enum direction dir);
+double calculeDistanceEntre2points(int pacmanX, int pacmanY, int fantomeX, int fantomeY);
+enum direction trouverDistancePlusCourte(int pacmanX, int pacmanY, char map[][166]);
+
+
 
 
 #endif //PACMAN_FANTOME_H

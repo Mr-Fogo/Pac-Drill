@@ -120,3 +120,31 @@ void deletePacManFromGrid(char (*map)[255][166])
         }
     }
 }
+
+int getPacmanX(char (*map)[255][166])
+{
+    for(int i = 0 ; i < 214 ; i++)
+    {
+        for (int j = 0 ; j < 166 ; j++)
+        {
+            if((*map)[i][j] == 'P') {
+                return j;
+            }
+        }
+    }
+    return 0;
+}
+
+int getPacmanY(char (*map)[255][166])
+{
+    for(int i = 0 ; i < 214 ; i++)
+    {
+        for (int j = 0 ; j < 166 ; j++)
+        {
+            if((*map)[i][j] == 'P') {
+                return i;
+            }
+        }
+    }
+    return 0;
+}
