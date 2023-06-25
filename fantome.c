@@ -125,6 +125,7 @@ bool contactMur(int y,int x,char map[][166])
 
 void moveAllFantom(char (*map)[255][166])
 {
+    deleteGhostFromGrid(map);
     for(int i=0; i<4; i++)
     {
         //printf("Move Fantome %d", ghostList[i].numero);
@@ -164,6 +165,7 @@ void moveFantome(char (*map)[255][166], struct Sprite *sprite)
 //            else
 //                isBlocked=true;
     }
+    (*map)[sprite->ghost.y/4][sprite->ghost.x/4] = 'G';
 }
 enum direction choisirDirectionAlea(enum direction *listeDirections, int nbDirections)
 {
