@@ -64,6 +64,28 @@ bool contactwithwall(int y, int x, char (*map)[255][166]) {
     return contact;
 }
 
+bool contactGhost(char (*map)[255][166],bool isMalveillanceMax)
+{
+    bool cdead = false;
+    for (int i = -1; i <= 8; i++) {
+        for (int j = -1; j <= 8; j++) {
+            if ((*map)[PacmanVisualY + i][PacmanVisualX + j] == 'G')
+            {
+                if(isMalveillanceMax)
+                {
+                    cdead = false;
+                }
+                else
+                {
+                    cdead = true;
+                }
+            }
+
+        }
+    }
+    return cdead;
+}
+
 void handleAnimation() {
     if (x_actuel == 0 && y_actuel == 1) {
         pacman_nextAnimation = pacman_d;
@@ -122,7 +144,7 @@ int contactwithdollars(char (*map)[255][166]) {
         for (int i = 0; i < 4; i++) {
             (*map)[dollards[i].y][dollards[i].x] = ' ';
         }
-        return 100;
+        return 10;
     } else {
         return 0;
     }
@@ -151,6 +173,14 @@ void movePacmanbutBetter(int vitesse, char (*map)[255][166], int x, int y) {
     handleAnimation();
 }
 
+void setPacManPosition(int x, int y, char (*map)[255][166]) {
+    PacMan.x = x;
+    PacMan.y = y;
+    PacmanVisualX = PacMan.x / 4;
+    PacmanVisualY = PacMan.y / 4;
+    deletePacManFromGrid(map);
+    (*map)[PacmanVisualY][PacmanVisualX] = 'P';
+}
 
 void drawPacman(SDL_Surface *win_surf, SDL_Surface *plancheSprites) {
     SDL_Rect PacMan_in2 = *PacMan_in;

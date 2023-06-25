@@ -53,8 +53,8 @@ void initFantom()
         //ghostList[i].currentDirection=RIGHT;
 
         SDL_Rect ghost = {4,
-                124 + i * (14 + 4),
-                14, 14};
+                          124 + i * (14 + 4),
+                          14, 14};
 
         exportSprites(&ghost,ghostList[i].rects,4,2 * (14 + 3),
                       0);
@@ -123,7 +123,7 @@ bool contactMur(int y,int x,char map[][166])
     return contact;
 }
 
-void moveAllFantom(char map[][166])
+void moveAllFantom(char (*map)[255][166])
 {
     for(int i=0; i<4; i++)
     {
@@ -132,38 +132,38 @@ void moveAllFantom(char map[][166])
     }
 }
 
-void moveFantome(char map[][166], struct Sprite *sprite)
+void moveFantome(char (*map)[255][166], struct Sprite *sprite)
 {
     //moveFantome(map);
-        if (sprite->currentDirection == RIGHT) {
-            //if (contactMur(0, 1, map)) {
-                sprite->ghost.x+=4;
+    if (sprite->currentDirection == RIGHT) {
+        //if (contactMur(0, 1, map)) {
+        sprite->ghost.x+=4;
 //                //isBlocked = false;
 //            } else
 //                isBlocked = true;
-        }
-        else if (sprite->currentDirection==LEFT)
-        {
+    }
+    else if (sprite->currentDirection==LEFT)
+    {
 //            if(contactMur(0,-1,map)) {
-                sprite->ghost.x-=4;
+        sprite->ghost.x-=4;
 //            }
 //            else
 //                isBlocked=true;
-        }
-        else if (sprite->currentDirection==UP)
-        {
+    }
+    else if (sprite->currentDirection==UP)
+    {
 //            if(contactMur(1,0,map))
-                sprite->ghost.y-=4;
+        sprite->ghost.y-=4;
 //            else
 //                isBlocked=true;
-        }
-        else if (sprite->currentDirection==DOWN)
-        {
+    }
+    else if (sprite->currentDirection==DOWN)
+    {
 //            if(contactMur(-1,0,map))
-                sprite->ghost.y+=4;
+        sprite->ghost.y+=4;
 //            else
 //                isBlocked=true;
-        }
+    }
 }
 enum direction choisirDirectionAlea(enum direction *listeDirections, int nbDirections)
 {
@@ -412,6 +412,5 @@ void freeGhosts()
     }
     free(ghostList);
 }
-
 
 

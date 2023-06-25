@@ -50,8 +50,8 @@ struct Sprite
 
 
 void initFantom();
-void moveFantome(char map[][166], struct Sprite *sprite);
-void moveAllFantom(char map[][166]);
+void moveFantome(char (*map)[255][166], struct Sprite *sprite);
+void moveAllFantom(char (*map)[255][166]);
 void drawFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites, struct Sprite *sprite);
 bool contactMur(int y,int x,char map[][166]);
 void changeDirection();
