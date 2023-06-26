@@ -59,7 +59,7 @@ struct Sprite
 void initFantom();
 void moveFantome(char (*map)[255][166], struct Sprite *sprite);
 void moveAllFantom(char (*map)[255][166],time_t elapsedTime);
-void drawFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites, struct Sprite *sprite);
+void drawFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites, struct Sprite *sprite, bool isMalveillanceMax);
 bool contactMur(int y,int x,char map[][166]);
 void changeDirection();
 void setALLFantomPositionAfterPacmanDied(char (*map)[255][166]);
@@ -71,9 +71,12 @@ enum direction getOppositeDirection(enum direction dir);
 double calculeDistanceEntre2points(int pacmanX, int pacmanY, int sourceX, int sourceY);
 enum direction trouverDistancePlusCourte(int pacmanX, int pacmanY, char map[][166], struct Sprite *sprite);
 void exportSprites(SDL_Rect *srcRect, SDL_Rect *destRect, int count, int xStep, int yStep);
-void drawAllFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites);
+void drawAllFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites,bool isMalveillanceMax);
 void changeFantomeState(time_t time);
 void setAllFantomeState(enum fantomeState fantomeState);
+bool contactWithPacman(char (*map)[255][166],bool isMalveillanceMax);
+void isInHouse(struct Sprite *sprite);
+
 
 
 void freeGhosts();
