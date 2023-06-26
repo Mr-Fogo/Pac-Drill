@@ -4,7 +4,7 @@
 
 #include "pacman.h"
 
-SDL_Rect PacMan = {32, 32, 32, 32};
+SDL_Rect PacMan = {325, 478, 32, 32};
 SDL_Rect *PacMan_in = &(PacMan);
 SDL_Rect pacman_r = {21, 90, 14, 14};
 SDL_Rect pacman_l = {47, 90, 14, 14};
@@ -31,24 +31,7 @@ int directionsprite = 0;
 int middlesprite = 0;
 int compteur = 0;
 bool animation = false;
-int PacmanInGridX = 7;
-int PacmanInGridY = 7;
-bool colorofmap = false;
 
-char pac = 'p';
-
-
-
-
-
-// TODO boolean de direction sur x ou y
-// TODO Buffer de direction
-// TODOs
-
-bool moveX = false;
-bool moveY = false;
-
-//int count;
 
 bool contactwithwall(int y, int x, char (*map)[255][166]) {
     bool contact = true;
@@ -64,6 +47,28 @@ bool contactwithwall(int y, int x, char (*map)[255][166]) {
     return contact;
 }
 
+bool contactwithcut(char (*map)[255][166]) {
+    struct Coordonees dollards[9];
+    int nbcut = 0;
+    for (int i = -1; i <= 8; i++) {
+        for (int j = -1; j <= 8; j++) {
+            if ((*map)[PacmanVisualY + i][PacmanVisualX + j] == 'c') {
+                dollards[nbcut].x = PacmanVisualX + j;
+                dollards[nbcut].y = PacmanVisualY + i;
+                nbcut++;
+            }
+
+        }
+    }
+    if (nbcut == 9) {
+        for (int i = 0; i < 9; i++) {
+            (*map)[dollards[i].y][dollards[i].x] = ' ';
+        }
+        return true;
+    } else {
+        return false;
+    }
+}
 bool contactGhost(char (*map)[255][166],bool isMalveillanceMax)
 {
     bool cdead = false;
@@ -86,7 +91,9 @@ bool contactGhost(char (*map)[255][166],bool isMalveillanceMax)
     return cdead;
 }
 
-void handleAnimation() {
+
+
+void handleAnimation(int compteurAnimation) {
     if (x_actuel == 0 && y_actuel == 1) {
         pacman_nextAnimation = pacman_d;
         pacman_nextAnimationfull = pacman_fd;
@@ -99,13 +106,12 @@ void handleAnimation() {
     } else if (x_actuel == -1 && y_actuel == 0) {
         pacman_nextAnimation = pacman_l;
         pacman_nextAnimationfull = pacman_fl;
-    } else {
-        pacman_nextAnimation = pacman_c;
     }
-    if (compteur % 2 == 0 && animation) {
+
+    if (compteurAnimation % 2 == 0 && animation) {
         if (directionsprite == 0) {
             if (middlesprite == 1) {
-                PacMan_in = &(pacman_nextAnimation);
+                PacMan_in = &(pacman_nextAnimationfull);
                 middlesprite = 0;
                 directionsprite = 1;
             } else {
@@ -114,18 +120,17 @@ void handleAnimation() {
             }
         } else {
             if (middlesprite == 1) {
-                PacMan_in = &(pacman_nextAnimation);
+                PacMan_in = &(pacman_c);
                 middlesprite = 0;
                 directionsprite = 0;
             } else {
-                PacMan_in = &(pacman_nextAnimationfull);
+                PacMan_in = &(pacman_nextAnimation);
                 middlesprite = 1;
             }
         }
-        animation = false;
-    } else
-        animation = true;
+    }
 }
+
 
 int contactwithdollars(char (*map)[255][166]) {
     struct Coordonees dollards[4];
@@ -150,12 +155,13 @@ int contactwithdollars(char (*map)[255][166]) {
     }
 }
 
+
 void movePacmanbutBetter(int vitesse, char (*map)[255][166], int x, int y) {
     PacmanVisualX = PacMan.x / 4;
     PacmanVisualY = PacMan.y / 4;
     PacMan_in = &(pacman_c);
+    animation = true;
     for (int i = 0; i < vitesse; i++) {
-        compteur++;
         if (contactwithwall(y, x, map)) {
             PacMan.x += x;
             PacMan.y += y;
@@ -163,14 +169,20 @@ void movePacmanbutBetter(int vitesse, char (*map)[255][166], int x, int y) {
             (*map)[PacmanVisualY + y][PacmanVisualX + x] = 'P';
             x_actuel = x;
             y_actuel = y;
+
         } else if (contactwithwall(y_actuel, x_actuel, map)) {
             PacMan.x += x_actuel;
             PacMan.y += y_actuel;
             deletePacManFromGrid(map);
             (*map)[PacmanVisualY + y_actuel][PacmanVisualX + x_actuel] = 'P';
         }
+        else
+        {
+            animation = false;
+        }
     }
-    handleAnimation();
+    compteur++;
+
 }
 
 void setPacManPosition(int x, int y, char (*map)[255][166]) {

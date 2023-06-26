@@ -62,6 +62,7 @@ void moveAllFantom(char (*map)[255][166],time_t elapsedTime);
 void drawFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites, struct Sprite *sprite);
 bool contactMur(int y,int x,char map[][166]);
 void changeDirection();
+void setALLFantomPositionAfterPacmanDied(char (*map)[255][166]);
 enum direction* directionsDisponibles(int y, int x, char map[][166], int *nbDirections, struct Sprite *sprite);
 void changementDirection(char map[][166]);
 enum direction choisirDirectionAlea(enum direction *listeDirections, int nbDirections);

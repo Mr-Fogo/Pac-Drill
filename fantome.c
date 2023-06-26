@@ -175,7 +175,29 @@ enum direction choisirDirectionAlea(enum direction *listeDirections, int nbDirec
     // Retourne la direction correspondant à l'indice aléatoire
     return listeDirections[indiceAleatoire];
 }
+void setALLFantomPositionAfterPacmanDied(char (*map)[255][166]) {
+    deleteGhostFromGrid(map);
+    for (int i = 0; i < 4; i++) {
+        if (i == 0) {
+            ghostList[i].ghost.x = 34;
+            ghostList[i].ghost.y = 34;
+        } else if (i == 1) {
+            ghostList[i].ghost.x = 34;
+            ghostList[i].ghost.y = 34;
 
+        } else if (i == 2) {
+            ghostList[i].ghost.x = 34;
+            ghostList[i].ghost.y = 34;
+
+        } else if (i == 3) {
+            ghostList[i].ghost.x = 34;
+            ghostList[i].ghost.y = 34;
+        }
+        ghostList[0].VisualPositionX = ghostList[0].ghost.x / 4;
+        ghostList[0].VisualPositionY = ghostList[0].ghost.y / 4;
+        (*map)[ghostList[i].VisualPositionY][ghostList[i].VisualPositionX] = 'G';
+    }
+}
 void changementDirection(char map[][166])
 {
 //    FantomVisualX=ghost.x/4;

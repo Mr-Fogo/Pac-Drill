@@ -18,4 +18,6 @@ void drawPacman(SDL_Surface* win_surf, SDL_Surface* plancheSprites);
 bool contact(int y,int x,char (*map)[255][166]);
 bool contactGhost(char (*map)[255][166],bool isMalveillanceMax);
 void setPacManPosition(int x, int y, char (*map)[255][166]);
+void handleAnimation(int compteurAnimation);
+bool contactwithcut(char (*map)[255][166]);
 #endif //PACMAN_PACMAN_H

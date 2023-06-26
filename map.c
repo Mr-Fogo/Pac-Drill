@@ -23,9 +23,16 @@ void createmap(SDL_Surface *plancheSprites, char map[][166]) {
             } else if ((ColorT.r == 149 && ColorT.g == 190 && ColorT.b == 143) ||
                        (ColorT.r == 203 && ColorT.g == 228 && ColorT.b == 199)) {
                 map[i][j] = 'd';
-            } else
+            } else if ((ColorT.r == 52 && ColorT.g == 52 && ColorT.b == 52) ||
+                       (ColorT.r == 182 && ColorT.g == 182 && ColorT.b == 182)) {
+                map[i][j] = 'c';
+            }else if (ColorT.r == 92 && ColorT.g == 36 && ColorT.b == 70){
+                map[i][j] = 'y';
+            }else if (ColorT.r == 92 && ColorT.g == 36 && ColorT.b == 200) {
+                map[i][j] = 'z';
+            }
+            else
                 map[i][j] = ' ';
-
             // printf("%c",map[i][j]);
         }
     }
@@ -67,7 +74,7 @@ SDL_Color GetPixelColor(const SDL_Surface *pSurface, int X, int Y) {
 }
 
 void set_pixel(SDL_Surface *surface, int x, int y, Uint32 pixel) {
-    Uint32 *const target_pixel = (Uint32 *) ((Uint8 *) surface->pixels
+    Uint32 *const target_pixel = (Uint32 * )((Uint8 *) surface->pixels
                                              + y * surface->pitch
                                              + x * surface->format->BytesPerPixel);
     *target_pixel = pixel;
@@ -88,8 +95,9 @@ void setMapTheme(SDL_Surface *surface, char (*map)[255][166]) {
     colorCount++;
     for (int i = 0; i < 214; i++) {
         for (int j = 0; j < 166; j++) {
-            if ((*map)[i][j] == 'x')
-                set_pixel(surface, j + 201, i + 4, (SDL_MapRGB(surface->format, colorCount%255, x+y %125,colorCount+125 %234)));
+            if ((*map)[i][j] == 'x' || (*map)[i][j] == 'y' || (*map)[i][j] == 'z')
+                set_pixel(surface, j + 201, i + 4,
+                          (SDL_MapRGB(surface->format, colorCount % 255, x + y % 125, colorCount + 125 % 234)));
         }
     }
 }
@@ -103,6 +111,7 @@ void deletePacManFromGrid(char (*map)[255][166]) {
         }
     }
 }
+
 void deleteGhostFromGrid(char (*map)[255][166]) {
     for (int i = 0; i < 214; i++) {
         for (int j = 0; j < 166; j++) {
@@ -122,6 +131,18 @@ int getPacmanX(char (*map)[255][166]) {
         }
     }
     return 0;
+}
+
+bool allDollarEat(char (*map)[255][166])
+{
+    for (int i = 0; i < 214; i++) {
+        for (int j = 0; j < 166; j++) {
+            if ((*map)[i][j] == 'd') {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
 int getPacmanY(char (*map)[255][166]) {
