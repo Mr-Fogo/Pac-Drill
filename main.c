@@ -3,6 +3,7 @@
 #include "map.h"
 #include "pacman.h"
 #include "fantome.h"
+#include <time.h>
 
 SDL_Window* pWindow = NULL;
 SDL_Surface* win_surf = NULL;
@@ -30,6 +31,8 @@ char map[214][166];
 static Uint32 wav_length; // length of our sample
 static Uint8* wav_buffer; // buffer containing our audio file
 static SDL_AudioSpec wav_spec; // the specs of our piece of music
+
+time_t start, current, stop;
 
 void renderText(const char* message, int posX, int posY);
 void my_audio_callback(void *userdata, Uint8 *stream, int len) {
@@ -240,13 +243,16 @@ int main(int argc, char** argv)
             if (keys[SDL_SCANCODE_SPACE])
             {
                 showMenu = false;
-                gameStarted = true; // La partie commence
+                gameStarted = true;
+                start = time(NULL);
+                // La partie commence
             }
             draw();
             SDL_UpdateWindowSurface(pWindow);
         }
         else if (gameEnded)
         {
+            stop = time(NULL);
             gameStarted = false;
             if (keys[SDL_SCANCODE_ESCAPE]) {
                 quit = true;
@@ -256,6 +262,7 @@ int main(int argc, char** argv)
         }
         else if (gameStarted)
         {
+            current = time(NULL);
             if (keys[SDL_SCANCODE_ESCAPE])
             {
                 showMap(map);
@@ -280,9 +287,8 @@ int main(int argc, char** argv)
                 nextDirection.x = 0;
                 nextDirection.y = 1;
             }
-
             movePacmanbutBetter(4, map, nextDirection.x, nextDirection.y);
-            moveAllFantom(map);
+            moveAllFantom(map, current-start);
             changementDirection(map);
             score += contactwithdollars(map);
             isPacManDead = contactGhost(map,isMalveillanceMax);
@@ -304,6 +310,7 @@ int main(int argc, char** argv)
                 else {
                     gameEnded = true;
                     gameStarted = false;
+                    //printf("The number of seconds for loop to run was %ld\n", stop - start);
                 }
             }
         }

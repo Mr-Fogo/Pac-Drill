@@ -29,19 +29,26 @@ enum direction{
     DOWN
 };
 
+enum fantomeState{
+    CHASE,
+    PATROL,
+    EATABLE,
+    EATEN
+};
+
+//SDL_Rect chaseTargets[]={};
+
 
 struct Sprite
 {
     int numero;
     int VisualPositionX;
     int VisualPositionY;
-//    int gridPositionX;
-//    int gridPositionY;
     enum direction currentDirection;
     SDL_Rect *rects;
     //SDL_Rect lastRect;
     SDL_Rect ghost;
-    //MazeElement ghostElement;
+    enum fantomeState state;
 };
 
 
@@ -51,7 +58,7 @@ struct Sprite
 
 void initFantom();
 void moveFantome(char (*map)[255][166], struct Sprite *sprite);
-void moveAllFantom(char (*map)[255][166]);
+void moveAllFantom(char (*map)[255][166],time_t elapsedTime);
 void drawFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites, struct Sprite *sprite);
 bool contactMur(int y,int x,char map[][166]);
 void changeDirection();
@@ -64,6 +71,10 @@ double calculeDistanceEntre2points(int pacmanX, int pacmanY, int sourceX, int so
 enum direction trouverDistancePlusCourte(int pacmanX, int pacmanY, char map[][166], struct Sprite *sprite);
 void exportSprites(SDL_Rect *srcRect, SDL_Rect *destRect, int count, int xStep, int yStep);
 void drawAllFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites);
+void changeFantomeState(time_t time);
+void setAllFantomeState(enum fantomeState fantomeState);
+
+
 void freeGhosts();
 
 
