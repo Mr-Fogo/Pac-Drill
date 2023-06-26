@@ -5,6 +5,7 @@
 #include "fantome.h"
 #include <time.h>
 
+
 SDL_Window* pWindow = NULL;
 SDL_Surface* win_surf = NULL;
 SDL_Surface* plancheSprites = NULL;
@@ -38,6 +39,7 @@ static Uint32 wav_length; // length of our sample
 static Uint8* wav_buffer; // buffer containing our audio file
 static SDL_AudioSpec wav_spec; // the specs of our piece of music
 time_t start, current, stop;
+
 
 void renderText(const char* message, int posX, int posY);
 void my_audio_callback(void *userdata, Uint8 *stream, int len) {
@@ -104,11 +106,31 @@ void drawEndScreen()
     SDL_FillRect(win_surf, NULL, SDL_MapRGB(win_surf->format, 0, 0, 0));
     // Affichage du texte de fin
     char endText[50];
-    sprintf(endText, "Partie terminée ! Score final : %d", score);
+    sprintf(endText, "GAME OVER");
+
     SDL_Surface* endSurface = TTF_RenderText_Solid(gFont, endText, textColor); // Surface du texte
-    SDL_Rect endPos = { 100, 400 }; // Position du texte
+    SDL_Rect endPos = { 270, 400 }; // Position du texte
     SDL_BlitSurface(endSurface, NULL, win_surf, &endPos); // Affichage du texte
     SDL_FreeSurface(endSurface); // Libération de la surface du texte
+
+    char scoreText[20]; // Texte du score
+    sprintf(scoreText, "Score: %d", score);
+    renderText(scoreText, 270, 430 ); // Exemple : Afficher le score à la position (10, 10)
+
+
+    char levelText[20]; // Texte du score
+    sprintf(levelText, "Niveau: %d", level);
+    renderText(levelText, 270, 460 ); // Exemple : Afficher le score à la position (10, 10)
+
+    char timeText[20]; // Texte du temps
+    // Obtenir le temps actuel
+    time_t elapsedTime = current - start; // Calculer le temps écoulé depuis le démarrage du jeu
+    int minutes = (elapsedTime % 3600) / 60;
+    int seconds = elapsedTime % 60;
+
+    sprintf(timeText, "%02d:%02d",minutes, seconds);
+    renderText(timeText, 270, 490 ); // Afficher le temps formaté à la position (550, 350)
+
     SDL_SetColorKey(plancheSprites, false, 0);
     SDL_BlitScaled(plancheSprites, &src_MenuPacman, win_surf, &MenuPacman);
     SDL_SetColorKey(plancheSprites, true, 0);
@@ -170,9 +192,14 @@ void draw() {
         sprintf(levelText, "Niveau: %d", level);
         renderText(levelText, 550, 325); // Exemple : Afficher le score à la position (10, 10)
 
-//        char timeText[20]; // Texte du score
-//        sprintf(timeText, "Vie: %d", nbVies);
-//        renderText(timeText, 10, 350); // Exemple : Afficher le score à la position (10, 10)
+        char timeText[20]; // Texte du temps
+         // Obtenir le temps actuel
+        time_t elapsedTime = current - start; // Calculer le temps écoulé depuis le démarrage du jeu
+        int minutes = (elapsedTime % 3600) / 60;
+        int seconds = elapsedTime % 60;
+
+        sprintf(timeText, "%02d:%02d",minutes, seconds);
+        renderText(timeText, 550, 350); // Afficher le temps formaté à la position (550, 350)
     }
     else if (gameNextLevel)
     {
@@ -195,6 +222,11 @@ void draw() {
         drawEndScreen();
     }
 
+}
+void handleTP()
+{
+    TPpacman(map);
+    TPghots(map);
 }
 void PacManestMortWesh()
 {
@@ -319,11 +351,11 @@ int main(int argc, char** argv)
             current = time(NULL);
             if (keys[SDL_SCANCODE_ESCAPE])
             {
-                //showMap(map);
-                NextLevel();
-                gameEnded = false;
-                gameStarted = false;
-                gameNextLevel = true;
+                showMap(map);
+//                NextLevel();
+//                gameEnded = false;
+//                gameStarted = false;
+//                gameNextLevel = true;
             }
             if (keys[SDL_SCANCODE_LEFT])
             {
@@ -351,19 +383,20 @@ int main(int argc, char** argv)
             compteurAnimation++;
             moveAllFantom(map, current-start);            changementDirection(map);
             score += contactwithdollars(map);
-            isPacManDead = contactGhost(map,isMalveillanceMax);
+            isPacManDead = contactWithPacman(map,isMalveillanceMax,&score);
+            handleTP();
             if(contactwithcut(map))
             {
                 isMalveillanceMax = true;
             }
             draw();
             drawPacman(win_surf, plancheSprites);
-            drawAllFantom(win_surf, plancheSprites);
+            drawAllFantom(win_surf, plancheSprites,isMalveillanceMax);
 
             SDL_Delay(20); // ~50 fps use SDL_GetTicks64() pour plus de precision
             SDL_UpdateWindowSurface(pWindow);
             updateMap(plancheSprites, map);
-            setMapTheme(plancheSprites, map);
+            setMapTheme(plancheSprites, map,isMalveillanceMax);
             if(allDollarEat(map))
             {
                 gameEnded = false;

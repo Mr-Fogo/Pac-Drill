@@ -67,6 +67,7 @@ enum direction* directionsDisponibles(int y, int x, char map[][166], int *nbDire
 void changementDirection(char map[][166]);
 enum direction choisirDirectionAlea(enum direction *listeDirections, int nbDirections);
 void touch(char dir);
+void TPghots(char (*map)[255][166]);
 enum direction getOppositeDirection(enum direction dir);
 double calculeDistanceEntre2points(int pacmanX, int pacmanY, int sourceX, int sourceY);
 enum direction trouverDistancePlusCourte(int pacmanX, int pacmanY, char map[][166], struct Sprite *sprite);
@@ -74,7 +75,7 @@ void exportSprites(SDL_Rect *srcRect, SDL_Rect *destRect, int count, int xStep, 
 void drawAllFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites,bool isMalveillanceMax);
 void changeFantomeState(time_t time);
 void setAllFantomeState(enum fantomeState fantomeState);
-bool contactWithPacman(char (*map)[255][166],bool isMalveillanceMax);
+bool contactWithPacman(char (*map)[255][166],bool isMalveillanceMax,int* score);
 void isInHouse(struct Sprite *sprite);
 
 

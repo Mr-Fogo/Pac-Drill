@@ -20,4 +20,5 @@ bool contactGhost(char (*map)[255][166],bool isMalveillanceMax);
 void setPacManPosition(int x, int y, char (*map)[255][166]);
 void handleAnimation(int compteurAnimation);
 bool contactwithcut(char (*map)[255][166]);
+void TPpacman(char (*map)[255][166]);
 #endif //PACMAN_PACMAN_H

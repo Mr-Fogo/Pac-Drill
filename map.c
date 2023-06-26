@@ -89,15 +89,19 @@ void updateMap(SDL_Surface *surface, char (*map)[255][166]) {
     }
 }
 
-void setMapTheme(SDL_Surface *surface, char (*map)[255][166]) {
+void setMapTheme(SDL_Surface *surface, char (*map)[255][166], bool isMal) {
     int x = getPacmanX(map);
     int y = getPacmanY(map);
     colorCount++;
     for (int i = 0; i < 214; i++) {
         for (int j = 0; j < 166; j++) {
             if ((*map)[i][j] == 'x' || (*map)[i][j] == 'y' || (*map)[i][j] == 'z')
-                set_pixel(surface, j + 201, i + 4,
-                          (SDL_MapRGB(surface->format, colorCount % 255, x + y % 125, colorCount + 125 % 234)));
+                if(isMal)
+                    set_pixel(surface, j + 201, i + 4, SDL_MapRGB(surface->format, 255, 0, 0));
+                else
+                    set_pixel(surface, j + 201, i + 4,
+                              (SDL_MapRGB(surface->format, colorCount % 255, x + y % 125, colorCount + 125 % 234)));
+
         }
     }
 }

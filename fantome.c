@@ -162,24 +162,44 @@ enum direction choisirDirectionAlea(enum direction *listeDirections, int nbDirec
 void setALLFantomPositionAfterPacmanDied(char (*map)[255][166]) {
     deleteGhostFromGrid(map);
     for (int i = 0; i < 4; i++) {
-        if (i == 0) {
-            ghostList[i].ghost.x = 34;
-            ghostList[i].ghost.y = 34;
-        } else if (i == 1) {
-            ghostList[i].ghost.x = 34;
-            ghostList[i].ghost.y = 34;
-
-        } else if (i == 2) {
-            ghostList[i].ghost.x = 34;
-            ghostList[i].ghost.y = 34;
-
-        } else if (i == 3) {
-            ghostList[i].ghost.x = 34;
-            ghostList[i].ghost.y = 34;
-        }
-        ghostList[0].VisualPositionX = ghostList[0].ghost.x / 4;
-        ghostList[0].VisualPositionY = ghostList[0].ghost.y / 4;
+        ghostList[i].ghost.x = 319;
+        ghostList[i].ghost.y = 412;
+        ghostList[i].VisualPositionX = ghostList[i].ghost.x / 4;
+        ghostList[i].VisualPositionY = ghostList[i].ghost.y / 4;
         (*map)[ghostList[i].VisualPositionY][ghostList[i].VisualPositionX] = 'G';
+    }
+}
+void TPghots(char (*map)[255][166]) {
+    int nbTPz;
+    int nbTPy;
+    for (int f = 0; f < 4; f++) {
+        nbTPy = 0;
+        nbTPz = 0;
+        for (int i = -1; i <= 8; i++) {
+            for (int j = -1; j <= 8; j++) {
+                if ((*map)[ghostList[f].VisualPositionY + i][ghostList[f].VisualPositionX + j] == 'z') {
+                    nbTPz++;
+                } else if ((*map)[ghostList[f].VisualPositionY + i][ghostList[f].VisualPositionX + j] == 'y') {
+                    nbTPy++;
+                }
+            }
+        }
+        if (nbTPz == 12) {
+            deleteGhostFromGrid(map);
+            ghostList[f].ghost.x = 34;
+            ghostList[f].ghost.y = 412;
+            ghostList[f].VisualPositionX = ghostList[f].ghost.x / 4;
+            ghostList[f].VisualPositionY = ghostList[f].ghost.y / 4;
+            (*map)[ghostList[f].VisualPositionY][ghostList[f].VisualPositionX] = 'G';
+        }
+        if (nbTPy == 12) {
+            deleteGhostFromGrid(map);
+            ghostList[f].ghost.x = 600;
+            ghostList[f].ghost.y = 412;
+            ghostList[f].VisualPositionX = ghostList[f].ghost.x / 4;
+            ghostList[f].VisualPositionY = ghostList[f].ghost.y / 4;
+            (*map)[ghostList[f].VisualPositionY][ghostList[f].VisualPositionX] = 'G';
+        }
     }
 }
 void changementDirection(char map[][166])
@@ -479,7 +499,7 @@ void setAllFantomeState(enum fantomeState fantomeState)
     }
 }
 
-bool contactWithPacman(char (*map)[255][166],bool isMalveillanceMax)
+bool contactWithPacman(char (*map)[255][166],bool isMalveillanceMax,int* score)
 {
     bool cdead = false;
     for (int a =0; a<4; a++)
@@ -489,6 +509,7 @@ bool contactWithPacman(char (*map)[255][166],bool isMalveillanceMax)
                 if ((*map)[ghostList[a].VisualPositionY + i][ghostList[a].VisualPositionX + j] == 'P') {
                     if (isMalveillanceMax) {
                         ghostList[a].state = EATEN;
+                        score+=100;
                     } else {
                         cdead = true;
                     }

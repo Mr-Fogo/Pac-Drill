@@ -155,6 +155,31 @@ int contactwithdollars(char (*map)[255][166]) {
     }
 }
 
+void TPpacman(char (*map)[255][166])
+{
+    int nbTPz = 0;
+    int nbTPy = 0;
+    for (int i = -1; i <= 8; i++) {
+        for (int j = -1; j <= 8; j++) {
+            if ((*map)[PacmanVisualY + i][PacmanVisualX + j] == 'z') {
+
+                nbTPz++;
+            }
+            else if ((*map)[PacmanVisualY + i][PacmanVisualX + j] == 'y') {
+
+                nbTPy++;
+            }
+        }
+    }
+    if (nbTPz == 12)
+    {
+        setPacManPosition(34, 412,map);
+    }
+    if(nbTPy == 12)
+    {
+        setPacManPosition(600, 412,map );
+    }
+}
 
 void movePacmanbutBetter(int vitesse, char (*map)[255][166], int x, int y) {
     PacmanVisualX = PacMan.x / 4;

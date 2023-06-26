@@ -16,7 +16,7 @@ void deletePacManFromGrid(char (*map)[255][166]);
 void deleteGhostFromGrid(char (*map)[255][166]);
 bool allDollarEat(char (*map)[255][166]);
 void updateGrid();
-void setMapTheme(SDL_Surface *surface,char (*map)[255][166]);
+void setMapTheme(SDL_Surface *surface,char (*map)[255][166],bool isMal);
 void updateMap(SDL_Surface *surface,char (*map)[255][166]);
 int getPacmanX(char (*map)[255][166]);
 int getPacmanY(char (*map)[255][166]);
