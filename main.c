@@ -117,7 +117,7 @@ void init() {
     pWindow = SDL_CreateWindow("PacMan", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 664, 856, SDL_WINDOW_SHOWN);
     win_surf = SDL_GetWindowSurface(pWindow);
 
-    plancheSprites = SDL_LoadBMP("./pacman_sprites.bmp");
+    plancheSprites = SDL_LoadBMP("../pacman_sprites.bmp");
 
     if (TTF_Init() != 0) {
         fprintf(stderr, "Erreur lors de l'initialisation de SDL_ttf : %s\n", TTF_GetError());
@@ -203,7 +203,7 @@ void PacManestMortWesh()
 }
 void NextLevel()
 {
-    plancheSprites = SDL_LoadBMP("./pacman_sprites.bmp");
+    plancheSprites = SDL_LoadBMP("../pacman_sprites.bmp");
     createmap(plancheSprites, map);
     setPacManPosition(325,478,map);
     setALLFantomPositionAfterPacmanDied(map);

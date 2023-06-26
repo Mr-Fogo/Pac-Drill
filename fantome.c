@@ -455,11 +455,11 @@ void changeFantomeState(time_t timeElapsed)
 {
 
 
-    printf("ElapsedTime : %ld\n",timeElapsed );
+//    printf("ElapsedTime : %ld\n",timeElapsed );
 
     static time_t dernierChangement = 0;
 
-    printf("DernierChangement : %ld\n",dernierChangement );
+//    printf("DernierChangement : %ld\n",dernierChangement );
 
 
 
@@ -475,12 +475,10 @@ void changeFantomeState(time_t timeElapsed)
         dernierChangement=timeElapsed;
     }
 
-
-
-    for (int i = 0; i < 4; i++)
-    {
-        printf("Fantome %d state : %d\n", ghostList[i].numero, ghostList[i].state );
-    }
+//    for (int i = 0; i < 4; i++)
+//    {
+//        printf("Fantome %d state : %d\n", ghostList[i].numero, ghostList[i].state );
+//    }
 }
 
 void setAllFantomeState(enum fantomeState fantomeState)
