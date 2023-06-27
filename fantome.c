@@ -31,6 +31,7 @@ void initFantom() {
         exportSprites(&ghost, ghostList[i].rects, 4, 2 * (14 + 3),
                       0);
         ghostList[i].state = PATROL;
+        ghostList[i].speed=4;
     }
 }
 
@@ -83,13 +84,13 @@ void moveAllFantom(char (*map)[255][166], time_t elapsedTime) {
 
 void moveFantome(char (*map)[255][166], struct Fantome *sprite) {
     if (sprite->currentDirection == RIGHT) {
-        sprite->ghost.x += 4;
+        sprite->ghost.x += sprite->speed;
     } else if (sprite->currentDirection == LEFT) {
-        sprite->ghost.x -= 4;
+        sprite->ghost.x -= sprite->speed;
     } else if (sprite->currentDirection == UP) {
-        sprite->ghost.y -= 4;
+        sprite->ghost.y -= sprite->speed;
     } else if (sprite->currentDirection == DOWN) {
-        sprite->ghost.y += 4;
+        sprite->ghost.y += sprite->speed;
     }
     (*map)[sprite->ghost.y / 4][sprite->ghost.x / 4] = 'G';
 }
@@ -119,8 +120,8 @@ void setALLFantomPositionAfterPacmanDied(char (*map)[255][166]) {
             ghostList[i].ghost.y = 412;
 
         ghostList[i].ghost.x = 319;
-        ghostList[i].VisualPositionX = ghostList[i].ghost.x / 4;
-        ghostList[i].VisualPositionY = ghostList[i].ghost.y / 4;
+        ghostList[i].VisualPositionX = ghostList[i].ghost.x / 2;
+        ghostList[i].VisualPositionY = ghostList[i].ghost.y / 2;
         (*map)[ghostList[i].VisualPositionY][ghostList[i].VisualPositionX] = 'G';
     }
 }
@@ -170,6 +171,7 @@ void changementDirection(char map[][166]) {
         enum direction *listeDirections = directionsDisponibles(0, 0, map, &nbDirections, &ghostList[i]);
         enum direction directionChoisie;
         if (ghostList[i].state == PATROL) {
+            ghostList[i].speed=3;
             if (i == 0) {
                 directionChoisie = trouverDistancePlusCourte(40, 0, map, &ghostList[i]);
             } else if (i == 1) {
@@ -179,6 +181,7 @@ void changementDirection(char map[][166]) {
             } else
                 directionChoisie = trouverDistancePlusCourte(40, 166, map, &ghostList[i]);
         } else if (ghostList[i].state == CHASE) {
+            ghostList[i].speed=3;
             if (i == 0) {
                 directionChoisie = trouverDistancePlusCourte(getPacmanX(map), getPacmanY(map), map, &ghostList[i]);
             } else if (i == 1) {
@@ -189,8 +192,10 @@ void changementDirection(char map[][166]) {
             } else
                 directionChoisie = choisirDirectionAlea(listeDirections, nbDirections);
         } else if (ghostList[i].state == EATEN) {
-            directionChoisie = trouverDistancePlusCourte(77, 79, map, &ghostList[i]);
+            ghostList[i].speed=4;
+            directionChoisie = trouverDistancePlusCourte(79, 95, map, &ghostList[i]);
         } else if (ghostList[i].state == EATABLE) {
+            ghostList[i].speed=3;
             directionChoisie = choisirDirectionAlea(listeDirections, nbDirections);
         }
         ghostList[i].currentDirection = directionChoisie;
@@ -361,7 +366,7 @@ bool contactWithPacman(char (*map)[255][166],bool isMalveillanceMax,int* score)
     return cdead;
 }
 void isInHouse(struct Fantome *sprite) {
-    if (sprite->VisualPositionX == 77 && sprite->VisualPositionY == 79 && sprite->state == EATEN) {
+    if (sprite->VisualPositionX == 79 && (sprite->VisualPositionY >= 95 && sprite->VisualPositionY<=103)&& sprite->state == EATEN) {
         sprite->state = PATROL;
     }
 }

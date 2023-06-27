@@ -40,12 +40,8 @@ struct Fantome
     SDL_Rect *rects;
     SDL_Rect ghost;
     enum fantomeState state;
+    float speed;
 };
-
-
-
-
-
 
 void initFantom();
 void moveFantome(char (*map)[255][166], struct Fantome *sprite);
