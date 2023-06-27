@@ -9,17 +9,17 @@
 struct Fantome *ghostList;
 
 
-int count=0;
+int count = 0;
 
-SDL_Rect ghost_r = { 3,123, 16,16 };
-SDL_Rect ghost_l = { 37,123, 16,16 };
-SDL_Rect ghost_d = { 105,123, 16,16 };
-SDL_Rect ghost_u = { 71,123, 16,16 };
+SDL_Rect ghost_r = {3, 123, 16, 16};
+SDL_Rect ghost_l = {37, 123, 16, 16};
+SDL_Rect ghost_d = {105, 123, 16, 16};
+SDL_Rect ghost_u = {71, 123, 16, 16};
 
 //SDL_Rect ghost = { 400,31, 32,32 };
-SDL_Rect fantomeMangeable = { 4,196, 14,14 };
-SDL_Rect fantomeMange = { 72,200, 14,10 };
-bool isBlocked=false;
+SDL_Rect fantomeMangeable = {4, 196, 14, 14};
+SDL_Rect fantomeMange = {72, 200, 14, 10};
+bool isBlocked = false;
 //void initFantome()
 //{
 //    SDL_Rect clyde.ghost_r =  {3,123, 16,16};
@@ -35,15 +35,13 @@ int FantomVisualY;
 //enum direction currentDirection;
 
 
-void initFantom()
-{
+void initFantom() {
     ghostList = malloc(sizeof(struct Fantome) * 4);
 
-    for (int i =0; i<4;i++)
-    {
-        ghostList[i].numero=i;
+    for (int i = 0; i < 4; i++) {
+        ghostList[i].numero = i;
         ghostList[i].rects = malloc(sizeof(SDL_Rect) * 4);
-        ghostList[i].ghost= (SDL_Rect){400,31, 32,32};
+        ghostList[i].ghost = (SDL_Rect) {400, 31, 32, 32};
 //        ghostList[i].VisualPositionX=ghostList[i].ghost.x/4;
 //        ghostList[i].VisualPositionY=ghostList[i].ghost.y/4;
         //ghostList[i].currentDirection=RIGHT;
@@ -52,53 +50,45 @@ void initFantom()
                           124 + i * (14 + 4),
                           14, 14};
 
-        exportSprites(&ghost,ghostList[i].rects,4,2 * (14 + 3),
+        exportSprites(&ghost, ghostList[i].rects, 4, 2 * (14 + 3),
                       0);
-        ghostList[i].state=PATROL;
+        ghostList[i].state = PATROL;
     }
 }
 
-void drawAllFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites, bool isMalveillanceMax)
-{
+void drawAllFantom(SDL_Surface *win_surf, SDL_Surface *plancheSprites, bool isMalveillanceMax) {
 
-    for (int i=0; i<4; i++)
-    {
-        drawFantom(win_surf,plancheSprites, &ghostList[i],isMalveillanceMax);
+    for (int i = 0; i < 4; i++) {
+        drawFantom(win_surf, plancheSprites, &ghostList[i], isMalveillanceMax);
     }
 
 }
-void drawFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites, struct Fantome *sprite, bool isMalveillanceMax)
-{
+
+void drawFantom(SDL_Surface *win_surf, SDL_Surface *plancheSprites, struct Fantome *sprite, bool isMalveillanceMax) {
 //    if(isMalveillanceMax) {
 //        sprite->state = EATABLE;
 //    }
     SDL_Rect rect = {sprite->ghost.x, sprite->ghost.y, 32, 32};
 
     SDL_Rect *ghost_in;
-    if(sprite->state == EATABLE) {
+    if (sprite->state == EATABLE) {
 
         ghost_in = &fantomeMangeable;
-    }
-    else if (sprite->state == EATEN)
-    {
+    } else if (sprite->state == EATEN) {
         ghost_in = &fantomeMange;
-    }
-    else
+    } else
         ghost_in = &(sprite->rects[0]);
 
     SDL_BlitScaled(plancheSprites, ghost_in, win_surf, &rect);
 
 }
 
-bool contactMur(int y,int x,char map[][166])
-{
+bool contactMur(int y, int x, char map[][166]) {
     bool contact = true;
-    for (int i = -1; i <= 8; i++)
-    {
-        for (int j = -1; j <= 8; j++)
-        {
-            if (map[FantomVisualY+y+i][FantomVisualX+x+j] == 'x' || map[FantomVisualY+y+i][FantomVisualX+x+j] == 'w' )
-            {
+    for (int i = -1; i <= 8; i++) {
+        for (int j = -1; j <= 8; j++) {
+            if (map[FantomVisualY + y + i][FantomVisualX + x + j] == 'x' ||
+                map[FantomVisualY + y + i][FantomVisualX + x + j] == 'w') {
                 return false;
             }
 
@@ -107,54 +97,45 @@ bool contactMur(int y,int x,char map[][166])
     return contact;
 }
 
-void moveAllFantom(char (*map)[255][166], time_t elapsedTime)
-{
+void moveAllFantom(char (*map)[255][166], time_t elapsedTime) {
     deleteGhostFromGrid(map);
     changeFantomeState(elapsedTime);
-    for(int i=0; i<4; i++)
-    {
+    for (int i = 0; i < 4; i++) {
         //printf("Move Fantome %d", ghostList[i].numero);
         isInHouse(&ghostList[i]);
-        moveFantome(map,&ghostList[i]);
+        moveFantome(map, &ghostList[i]);
     }
 }
 
-void moveFantome(char (*map)[255][166], struct Fantome *sprite)
-{
+void moveFantome(char (*map)[255][166], struct Fantome *sprite) {
     //moveFantome(map);
     if (sprite->currentDirection == RIGHT) {
         //if (contactMur(0, 1, map)) {
-        sprite->ghost.x+=4;
+        sprite->ghost.x += 4;
 //                //isBlocked = false;
 //            } else
 //                isBlocked = true;
-    }
-    else if (sprite->currentDirection==LEFT)
-    {
+    } else if (sprite->currentDirection == LEFT) {
 //            if(contactMur(0,-1,map)) {
-        sprite->ghost.x-=4;
+        sprite->ghost.x -= 4;
 //            }
 //            else
 //                isBlocked=true;
-    }
-    else if (sprite->currentDirection==UP)
-    {
+    } else if (sprite->currentDirection == UP) {
 //            if(contactMur(1,0,map))
-        sprite->ghost.y-=4;
+        sprite->ghost.y -= 4;
 //            else
 //                isBlocked=true;
-    }
-    else if (sprite->currentDirection==DOWN)
-    {
+    } else if (sprite->currentDirection == DOWN) {
 //            if(contactMur(-1,0,map))
-        sprite->ghost.y+=4;
+        sprite->ghost.y += 4;
 //            else
 //                isBlocked=true;
     }
-    (*map)[sprite->ghost.y/4][sprite->ghost.x/4] = 'G';
+    (*map)[sprite->ghost.y / 4][sprite->ghost.x / 4] = 'G';
 }
-enum direction choisirDirectionAlea(enum direction *listeDirections, int nbDirections)
-{
+
+enum direction choisirDirectionAlea(enum direction *listeDirections, int nbDirections) {
     if (nbDirections == 0) {
         return -1;  // Pas de direction disponible
     }
@@ -165,16 +146,26 @@ enum direction choisirDirectionAlea(enum direction *listeDirections, int nbDirec
     // Retourne la direction correspondant à l'indice aléatoire
     return listeDirections[indiceAleatoire];
 }
+
 void setALLFantomPositionAfterPacmanDied(char (*map)[255][166]) {
     deleteGhostFromGrid(map);
     for (int i = 0; i < 4; i++) {
+        if (i == 0)
+            ghostList[i].ghost.y = 380;
+        else if (i == 1)
+            ghostList[i].ghost.y = 390;
+        else if (i == 2)
+            ghostList[i].ghost.y = 400;
+        else if (i == 3)
+            ghostList[i].ghost.y = 412;
+
         ghostList[i].ghost.x = 319;
-        ghostList[i].ghost.y = 412;
         ghostList[i].VisualPositionX = ghostList[i].ghost.x / 4;
         ghostList[i].VisualPositionY = ghostList[i].ghost.y / 4;
         (*map)[ghostList[i].VisualPositionY][ghostList[i].VisualPositionX] = 'G';
     }
 }
+
 void TPghots(char (*map)[255][166]) {
     int nbTPz;
     int nbTPy;
@@ -208,51 +199,41 @@ void TPghots(char (*map)[255][166]) {
         }
     }
 }
-void changementDirection(char map[][166])
-{
+
+void changementDirection(char map[][166]) {
 //    FantomVisualX=ghost.x/4;
 //    FantomVisualY=ghost.y/4;
     srand(time(NULL));
-    for (int i =0; i<4; i++) {
+    for (int i = 0; i < 4; i++) {
 
-        ghostList[i].VisualPositionX=ghostList[i].ghost.x/4;
-        ghostList[i].VisualPositionY=ghostList[i].ghost.y/4;
+        ghostList[i].VisualPositionX = ghostList[i].ghost.x / 4;
+        ghostList[i].VisualPositionY = ghostList[i].ghost.y / 4;
 
         int nbDirections;
         enum direction *listeDirections = directionsDisponibles(0, 0, map, &nbDirections, &ghostList[i]);
         enum direction directionChoisie;
-        if (ghostList[i].state == PATROL)
-        {
-            if (i==0) {
-                directionChoisie = trouverDistancePlusCourte(0, 0, map, &ghostList[i]);
-            }
-            else if (i==1) {
-                directionChoisie = trouverDistancePlusCourte(213, 165, map, &ghostList[i]);
-            }
-            else if (i==2) {
-                directionChoisie = trouverDistancePlusCourte(213, 0, map, &ghostList[i]);
-            }
-            else
-                directionChoisie = trouverDistancePlusCourte(0, 166, map, &ghostList[i]);
-        }
-        else if (ghostList[i].state == CHASE)
-        {
-            if (i==0) {
+        if (ghostList[i].state == PATROL) {
+            if (i == 0) {
+                directionChoisie = trouverDistancePlusCourte(40, 0, map, &ghostList[i]);
+            } else if (i == 1) {
+                directionChoisie = trouverDistancePlusCourte(130, 165, map, &ghostList[i]);
+            } else if (i == 2) {
+                directionChoisie = trouverDistancePlusCourte(130, 0, map, &ghostList[i]);
+            } else
+                directionChoisie = trouverDistancePlusCourte(40, 166, map, &ghostList[i]);
+        } else if (ghostList[i].state == CHASE) {
+            if (i == 0) {
                 directionChoisie = trouverDistancePlusCourte(getPacmanX(map), getPacmanY(map), map, &ghostList[i]);
-            }
-            else if (i==1) {
-                directionChoisie = trouverDistancePlusCourte(getPacmanX(map)+11, getPacmanY(map)+11, map, &ghostList[i]);
-            }
-            else if (i==2) {
+            } else if (i == 1) {
+                directionChoisie = trouverDistancePlusCourte(getPacmanX(map) + 11, getPacmanY(map) + 11, map,
+                                                             &ghostList[i]);
+            } else if (i == 2) {
                 directionChoisie = trouverDistancePlusCourte(getPacmanX(map), getPacmanY(map), map, &ghostList[i]);
-            }
-            else
+            } else
                 directionChoisie = choisirDirectionAlea(listeDirections, nbDirections);
-        }
-        else if (ghostList[i].state == EATEN) {
+        } else if (ghostList[i].state == EATEN) {
             directionChoisie = trouverDistancePlusCourte(77, 79, map, &ghostList[i]);
-        }
-        else if (ghostList[i].state == EATABLE) {
+        } else if (ghostList[i].state == EATABLE) {
             directionChoisie = choisirDirectionAlea(listeDirections, nbDirections);
         }
         ghostList[i].currentDirection = directionChoisie;
@@ -312,7 +293,7 @@ void changementDirection(char map[][166])
 //
 //}
 
-enum direction* directionsDisponibles(int y, int x, char map[][166], int *nbDirections, struct Fantome *sprite) {
+enum direction *directionsDisponibles(int y, int x, char map[][166], int *nbDirections, struct Fantome *sprite) {
     enum direction *listeDirections = malloc(
             4 * sizeof(enum direction)); // Allouer de la mémoire pour la liste des directions
     *nbDirections = 0;  // Initialisation du nombre de directions disponibles
@@ -356,8 +337,7 @@ enum direction* directionsDisponibles(int y, int x, char map[][166], int *nbDire
     return listeDirections;
 }
 
-enum direction getOppositeDirection(enum direction dir)
-{
+enum direction getOppositeDirection(enum direction dir) {
     switch (dir) {
         case RIGHT:
             return LEFT;
@@ -396,11 +376,10 @@ enum direction getOppositeDirection(enum direction dir)
 //
 //}
 
-enum direction trouverDistancePlusCourte(int pacmanX, int pacmanY, char map[][166], struct Fantome *sprite)
-{
+enum direction trouverDistancePlusCourte(int pacmanX, int pacmanY, char map[][166], struct Fantome *sprite) {
     int nbDirections;
     //enum direction currentDirection = /* la direction courante du fantôme */;
-    enum direction *listeDirections = directionsDisponibles(0, 0,  map, &nbDirections, sprite);
+    enum direction *listeDirections = directionsDisponibles(0, 0, map, &nbDirections, sprite);
 
     long int distanceMin = 99999999999999;
     enum direction plusCourteDirection;
@@ -434,7 +413,7 @@ enum direction trouverDistancePlusCourte(int pacmanX, int pacmanY, char map[][16
 //        printf("Fantome %d - Distance %d = %d\n", sprite->numero ,dir, distance);
         // Mettre à jour la distance minimale
         if (distance < distanceMin) {
-            distanceMin=distance;
+            distanceMin = distance;
             plusCourteDirection = dir;
         }
     }
@@ -446,20 +425,17 @@ enum direction trouverDistancePlusCourte(int pacmanX, int pacmanY, char map[][16
     return plusCourteDirection;
 }
 
-double calculeDistanceEntre2points(int pacmanX, int pacmanY, int sourceX, int sourceY)
-{
+double calculeDistanceEntre2points(int pacmanX, int pacmanY, int sourceX, int sourceY) {
     int deltaX = abs(pacmanX - sourceX);
-    int deltaY = abs (pacmanY - sourceY);
+    int deltaY = abs(pacmanY - sourceY);
 //    printf("delX = %d, delY = %d\n", deltaX, deltaY);
     double distance = sqrt(deltaX * deltaX + deltaY * deltaY);
 //    printf("distance = %d \n", distance);
     return distance;
 }
 
-void exportSprites(SDL_Rect *srcRect, SDL_Rect *destRect, int count, int xStep, int yStep)
-{
-    for (int i = 0; i < count; i++)
-    {
+void exportSprites(SDL_Rect *srcRect, SDL_Rect *destRect, int count, int xStep, int yStep) {
+    for (int i = 0; i < count; i++) {
         destRect[i].x = srcRect->x + i * xStep;
         destRect[i].y = srcRect->y + i * yStep;
         destRect[i].w = srcRect->w;
@@ -467,21 +443,17 @@ void exportSprites(SDL_Rect *srcRect, SDL_Rect *destRect, int count, int xStep, 
     }
 }
 
-void changeFantomeState(time_t timeElapsed)
-{
+void changeFantomeState(time_t timeElapsed) {
 
     static time_t dernierChangement = 0;
 
-    if(ghostList[0].state == PATROL && (timeElapsed - dernierChangement >= 10))
-    {
+    if (ghostList[0].state == PATROL && (timeElapsed - dernierChangement >= 10)) {
         setAllFantomeState(CHASE);
-        dernierChangement=timeElapsed;
+        dernierChangement = timeElapsed;
 
-    }
-    else if(ghostList[0].state == CHASE && (timeElapsed - dernierChangement >= 20))
-    {
+    } else if (ghostList[0].state == CHASE && (timeElapsed - dernierChangement >= 20)) {
         setAllFantomeState(PATROL);
-        dernierChangement=timeElapsed;
+        dernierChangement = timeElapsed;
     }
 
 //    for (int i = 0; i < 4; i++)
@@ -490,24 +462,21 @@ void changeFantomeState(time_t timeElapsed)
 //    }
 }
 
-void setAllFantomeState(enum fantomeState fantomeState)
-{
+void setAllFantomeState(enum fantomeState fantomeState) {
     for (int i = 0; i < 4; i++) {
         ghostList[i].state = fantomeState;
     }
 }
 
-bool contactWithPacman(char (*map)[255][166],bool isMalveillanceMax,int* score)
-{
+bool contactWithPacman(char (*map)[255][166], bool isMalveillanceMax, int *score) {
     bool cdead = false;
-    for (int a =0; a<4; a++)
-    {
+    for (int a = 0; a < 4; a++) {
         for (int i = -1; i <= 8; i++) {
             for (int j = -1; j <= 8; j++) {
                 if ((*map)[ghostList[a].VisualPositionY + i][ghostList[a].VisualPositionX + j] == 'P') {
                     if (isMalveillanceMax) {
                         ghostList[a].state = EATEN;
-                        score+=100;
+                        score += 100;
                     } else {
                         cdead = true;
                     }
@@ -519,37 +488,29 @@ bool contactWithPacman(char (*map)[255][166],bool isMalveillanceMax,int* score)
     return cdead;
 }
 
-void isInHouse(struct Fantome *sprite)
-{
-    if(sprite->VisualPositionX == 77 && sprite->VisualPositionY==79 && sprite->state==EATEN)
-    {
-        sprite->state=PATROL;
+void isInHouse(struct Fantome *sprite) {
+    if (sprite->VisualPositionX == 77 && sprite->VisualPositionY == 79 && sprite->state == EATEN) {
+        sprite->state = PATROL;
     }
 }
 
 
-void freeGhosts()
-{
-    for (int i = 0; i < 4; i++)
-    {
+void freeGhosts() {
+    for (int i = 0; i < 4; i++) {
         free(ghostList[i].rects);
     }
     free(ghostList);
 }
 
-void setFantomeEatable()
-{
-    for (int i = 0; i < 4; i++)
-    {
-        ghostList[i].state=EATABLE;
+void setFantomeEatable() {
+    for (int i = 0; i < 4; i++) {
+        ghostList[i].state = EATABLE;
     }
 }
 
-void quitEatbleState()
-{
-    for (int i = 0; i < 4; i++)
-    {
-        ghostList[i].state=PATROL;
+void quitEatbleState() {
+    for (int i = 0; i < 4; i++) {
+        ghostList[i].state = PATROL;
     }
 }
 

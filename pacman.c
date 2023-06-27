@@ -226,13 +226,4 @@ void drawPacman(SDL_Surface *win_surf, SDL_Surface *plancheSprites) {
     //set_pixel(plancheSprites, PacmanVisualX + 201, PacmanVisualY + 4, SDL_MapRGB(plancheSprites->format, 0, 254, 0));
 }
 
-//void swapSong(char path[] )
-//{
-//    MUS_PATH = path;
-//    SDL_CloseAudio();
-//    SDL_FreeWAV(wav_buffer);
-//    SDL_LoadWAV(MUS_PATH, &wav_spec, &wav_buffer, &wav_length);
-//    SDL_OpenAudio(&wav_spec, NULL);
-//    SDL_PauseAudio(0);
-//}
 

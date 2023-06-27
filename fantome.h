@@ -40,6 +40,7 @@ struct Fantome
     SDL_Rect *rects;
     SDL_Rect ghost;
     enum fantomeState state;
+    bool eatable;
 
 };
 
@@ -49,6 +50,7 @@ struct Fantome
 
 
 void initFantom();
+void setFantomeAllEatable(bool eatable);
 void moveFantome(char (*map)[255][166], struct Fantome *sprite);
 void moveAllFantom(char (*map)[255][166],time_t elapsedTime);
 void drawFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites, struct Fantome *sprite, bool isMalveillanceMax);

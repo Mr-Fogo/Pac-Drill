@@ -21,6 +21,7 @@ bool gameNextLevel = false;
 #define MUS_PATH_PacMan "../PacManSong.wav"
 bool isMalveillanceMax = false;
 bool isPacManDead = false;
+bool loadSong = false;
 int score = 0;
 int nbVies = 3;
 int compteurAnimation = 0;
@@ -75,6 +76,7 @@ void cleanup() {
 
     TTF_Quit();
     SDL_Quit();
+    freeGhosts();
 }
 
 void drawMenu()
@@ -239,8 +241,59 @@ void NextLevel()
     createmap(plancheSprites, map);
     setPacManPosition(325,478,map);
     setALLFantomPositionAfterPacmanDied(map);
+    setAllFantomeState(PATROL);
     isMalveillanceMax = false;
     level++;
+    loadSong = true;
+
+}
+void swapSong() {
+    if(isMalveillanceMax && loadSong) {
+
+        SDL_CloseAudio();
+        SDL_FreeWAV(wav_buffer);
+        SDL_LoadWAV(MUS_PATH_PacMan, &wav_spec, &wav_buffer, &wav_length);
+        wav_spec.callback = my_audio_callback;
+        wav_spec.userdata = NULL;
+        // set our global static variables
+        audio_pos = wav_buffer; // copy sound buffer
+        audio_len = wav_length; // copy file length
+        SDL_OpenAudio(&wav_spec, NULL);
+        SDL_PauseAudio(0);
+
+        loadSong = false;
+    } else if (!isMalveillanceMax && loadSong)
+    {
+        SDL_CloseAudio();
+        SDL_FreeWAV(wav_buffer);
+        SDL_LoadWAV(MUS_PATH, &wav_spec, &wav_buffer, &wav_length);
+        wav_spec.callback = my_audio_callback;
+        wav_spec.userdata = NULL;
+        // set our global static variables
+        audio_pos = wav_buffer; // copy sound buffer
+        audio_len = wav_length; // copy file length
+        SDL_OpenAudio(&wav_spec, NULL);
+        SDL_PauseAudio(0);
+
+        loadSong = false;
+    }
+}
+void ResetAll() {
+    plancheSprites = SDL_LoadBMP("../pacman_sprites.bmp");
+    createmap(plancheSprites, map);
+    setPacManPosition(325, 478, map);
+    setALLFantomPositionAfterPacmanDied(map);
+    setAllFantomeState(PATROL);
+    isMalveillanceMax = false;
+    level = 1;
+    score = 0;
+    nbVies = 3;
+    start = time(NULL);
+    loadSong = true;
+    current = time(NULL);
+    gameStarted = true;
+    gameEnded = false;
+    gameNextLevel = false;
 }
 int main(int argc, char** argv)
 {
@@ -296,6 +349,7 @@ int main(int argc, char** argv)
     bool quit = false;
     struct nextDirection nextDirection = { 0, 0 };
     initFantom();
+    setALLFantomPositionAfterPacmanDied(map);
     while (!quit)
     {
         SDL_Event event;
@@ -343,6 +397,10 @@ int main(int argc, char** argv)
             if (keys[SDL_SCANCODE_ESCAPE]) {
                 quit = true;
             }
+            else if (keys[SDL_SCANCODE_SPACE])
+            {
+                ResetAll();
+            }
             draw();
             SDL_UpdateWindowSurface(pWindow);
         }
@@ -352,7 +410,7 @@ int main(int argc, char** argv)
 
             if (keys[SDL_SCANCODE_ESCAPE])
             {
-                showMap(map);
+//                showMap(map);
 //                NextLevel();
 //                gameEnded = false;
 //                gameStarted = false;
@@ -391,6 +449,7 @@ int main(int argc, char** argv)
                 isMalveillanceMax = true;
                 lastChange =current-start;
                 setFantomeEatable();
+                loadSong = true;
             }
             isMalveillanceTimer(current-start, lastChange);
             draw();
@@ -401,6 +460,7 @@ int main(int argc, char** argv)
             SDL_UpdateWindowSurface(pWindow);
             updateMap(plancheSprites, map);
             setMapTheme(plancheSprites, map,isMalveillanceMax);
+            swapSong();
             if(allDollarEat(map))
             {
                 gameEnded = false;
@@ -442,6 +502,7 @@ void isMalveillanceTimer(time_t current, time_t lastChange)
         if (dernierchangement-lastChange >= 15) {
             printf("hello");
             isMalveillanceMax = false;
+            loadSong = true;
             quitEatbleState();
         }
 
