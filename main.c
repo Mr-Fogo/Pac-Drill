@@ -150,7 +150,7 @@ void init() {
     }
 
     // Chargement de la police de caractères
-    font = TTF_OpenFont("PAC-FONT.ttf",
+    font = TTF_OpenFont("../PAC-FONT.ttf",
                         15); // Remplacez "chemin/vers/la/police.ttf" par le chemin vers votre police de caractères
 
     if (font == NULL) {
@@ -212,7 +212,7 @@ void draw() {
         SDL_FillRect(win_surf, NULL, SDL_MapRGB(win_surf->format, 0, 0, 0));
         // Affichage du texte de fin
         char nextText[70];
-        sprintf(nextText, "Appuyer sur espace pour lancer le prochain niveau");
+        sprintf(nextText, "appuyer sur espace pour lancer le prochain niveau");
         SDL_Surface *nextSurface = TTF_RenderText_Solid(gFont, nextText, textColor); // Surface du texte
         SDL_Rect nextPos = {100, 400}; // Position du texte
         SDL_BlitSurface(nextSurface, NULL, win_surf, &nextPos); // Affichage du texte
@@ -315,7 +315,7 @@ int main(int argc, char **argv) {
     }
 
     // Charger la police de caractères
-    gFont = TTF_OpenFont("arial.ttf", 22);
+    gFont = TTF_OpenFont("../arial.ttf", 22);
     if (gFont == NULL) {
         fprintf(stderr, "Impossible de charger la police de caractères : %s", TTF_GetError());
         cleanup();
@@ -351,6 +351,8 @@ int main(int argc, char **argv) {
     struct nextDirection nextDirection = {0, 0};
     initFantom();
     setALLFantomPositionAfterPacmanDied(map);
+    nextDirection.x=1;
+    nextDirection.y=0;
     while (!quit) {
         SDL_Event event;
         while (!quit && SDL_PollEvent(&event)) {
