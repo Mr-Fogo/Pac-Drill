@@ -468,16 +468,23 @@ void setAllFantomeState(enum fantomeState fantomeState) {
     }
 }
 
-bool contactWithPacman(char (*map)[255][166], bool isMalveillanceMax, int *score) {
+bool contactWithPacman(char (*map)[255][166],bool isMalveillanceMax,int* score)
+{
     bool cdead = false;
-    for (int a = 0; a < 4; a++) {
+    for (int a =0; a<4; a++)
+    {
         for (int i = -1; i <= 8; i++) {
             for (int j = -1; j <= 8; j++) {
                 if ((*map)[ghostList[a].VisualPositionY + i][ghostList[a].VisualPositionX + j] == 'P') {
-                    if (isMalveillanceMax) {
+                    if (ghostList[a].state==EATABLE) {
                         ghostList[a].state = EATEN;
-                        score += 100;
-                    } else {
+                        score+=100;
+                    }
+                    else if (ghostList[a].state==EATEN)
+                    {
+
+                    }
+                    else {
                         cdead = true;
                     }
                 }
@@ -487,7 +494,6 @@ bool contactWithPacman(char (*map)[255][166], bool isMalveillanceMax, int *score
     }
     return cdead;
 }
-
 void isInHouse(struct Fantome *sprite) {
     if (sprite->VisualPositionX == 77 && sprite->VisualPositionY == 79 && sprite->state == EATEN) {
         sprite->state = PATROL;
@@ -502,9 +508,14 @@ void freeGhosts() {
     free(ghostList);
 }
 
-void setFantomeEatable() {
-    for (int i = 0; i < 4; i++) {
-        ghostList[i].state = EATABLE;
+void setFantomeEatable()
+{
+    for (int i = 0; i < 4; i++)
+    {
+        if (ghostList[i].state!=EATEN)
+        {
+            ghostList[i].state = EATABLE;
+        }
     }
 }
 
