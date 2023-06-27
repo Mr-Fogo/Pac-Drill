@@ -38,7 +38,7 @@ char map[214][166];
 static Uint32 wav_length; // length of our sample
 static Uint8* wav_buffer; // buffer containing our audio file
 static SDL_AudioSpec wav_spec; // the specs of our piece of music
-time_t start, current, stop;
+time_t start, current, stop, lastChange;
 
 
 void renderText(const char* message, int posX, int posY);
@@ -349,6 +349,7 @@ int main(int argc, char** argv)
         else if (gameStarted)
         {
             current = time(NULL);
+
             if (keys[SDL_SCANCODE_ESCAPE])
             {
                 showMap(map);
@@ -388,9 +389,10 @@ int main(int argc, char** argv)
             if(contactwithcut(map))
             {
                 isMalveillanceMax = true;
+                lastChange =current-start;
                 setFantomeEatable();
             }
-            isMalveillanceTimer(current);
+            isMalveillanceTimer(current-start, lastChange);
             draw();
             drawPacman(win_surf, plancheSprites);
             drawAllFantom(win_surf, plancheSprites,isMalveillanceMax);
@@ -423,16 +425,26 @@ int main(int argc, char** argv)
     cleanup();
     return 0;
 }
-void isMalveillanceTimer()
+void isMalveillanceTimer(time_t current, time_t lastChange)
 {
+    time_t elapsedTime = current - start;
+
+
+    printf("debut %ld\n", current);
+    printf("last %ld\n", lastChange);
+    //printf("elapsed time %ld\n", elapsedTime);
     if(isMalveillanceMax) {
+        //time_t dernierchangement=0;
+        //lastChange=current;
+        time_t dernierchangement=current;
+        printf("dernier change %ld\n", dernierchangement);
 
-        time_t elapsedTime = current - start;
-
-        if (elapsedTime >= 15) {
+        if (dernierchangement-lastChange >= 15) {
+            printf("hello");
             isMalveillanceMax = false;
             quitEatbleState();
         }
+
     }
 
 }

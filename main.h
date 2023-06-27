@@ -13,7 +13,7 @@
 void my_audio_callback(void *userdata, Uint8 *stream, int len);
 void init();
 void draw();
-void isMalveillanceTimer();
+void isMalveillanceTimer(time_t current, time_t lastchange);
 struct nextDirection {
     int x;
     int y;

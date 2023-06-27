@@ -472,17 +472,17 @@ void changeFantomeState(time_t timeElapsed)
 
     static time_t dernierChangement = 0;
 
-         if(ghostList[0].state == PATROL && (timeElapsed - dernierChangement >= 10))
-        {
-            setAllFantomeState(CHASE);
-            dernierChangement=timeElapsed;
+    if(ghostList[0].state == PATROL && (timeElapsed - dernierChangement >= 10))
+    {
+        setAllFantomeState(CHASE);
+        dernierChangement=timeElapsed;
 
-        }
-        else if(ghostList[0].state == CHASE && (timeElapsed - dernierChangement >= 20))
-        {
-            setAllFantomeState(PATROL);
-            dernierChangement=timeElapsed;
-        }
+    }
+    else if(ghostList[0].state == CHASE && (timeElapsed - dernierChangement >= 20))
+    {
+        setAllFantomeState(PATROL);
+        dernierChangement=timeElapsed;
+    }
 
 //    for (int i = 0; i < 4; i++)
 //    {
