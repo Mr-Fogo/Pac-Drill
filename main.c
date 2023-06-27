@@ -388,7 +388,9 @@ int main(int argc, char** argv)
             if(contactwithcut(map))
             {
                 isMalveillanceMax = true;
+                setFantomeEatable();
             }
+            isMalveillanceTimer(current);
             draw();
             drawPacman(win_surf, plancheSprites);
             drawAllFantom(win_surf, plancheSprites,isMalveillanceMax);
@@ -421,3 +423,17 @@ int main(int argc, char** argv)
     cleanup();
     return 0;
 }
+void isMalveillanceTimer()
+{
+    if(isMalveillanceMax) {
+
+        time_t elapsedTime = current - start;
+
+        if (elapsedTime >= 15) {
+            isMalveillanceMax = false;
+            quitEatbleState();
+        }
+    }
+
+}
+
