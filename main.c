@@ -234,6 +234,10 @@ void PacManestMortWesh()
 {
     setPacManPosition(325,478,map);
     setALLFantomPositionAfterPacmanDied(map);
+    setAllFantomeState(PATROL);
+    isMalveillanceMax = false;
+    current = time(NULL);
+    loadSong = true;
 }
 void NextLevel()
 {
