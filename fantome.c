@@ -3,36 +3,17 @@
 //
 
 #include "fantome.h"
-//#include "pacman.h"
-
 
 struct Fantome *ghostList;
 
-
 int count = 0;
 
-SDL_Rect ghost_r = {3, 123, 16, 16};
-SDL_Rect ghost_l = {37, 123, 16, 16};
-SDL_Rect ghost_d = {105, 123, 16, 16};
-SDL_Rect ghost_u = {71, 123, 16, 16};
-
-//SDL_Rect ghost = { 400,31, 32,32 };
 SDL_Rect fantomeMangeable = {4, 196, 14, 14};
 SDL_Rect fantomeMange = {72, 200, 14, 10};
-bool isBlocked = false;
-//void initFantome()
-//{
-//    SDL_Rect clyde.ghost_r =  {3,123, 16,16};
-//    clyde.ghost_l = { 37,123, 16,16 };
-//    clyde.ghost_d = { 105,123, 16,16 };
-//    clyde.ghost_u = { 71,123, 16,16 };
-//    clyde.ghost = { 3,123, 16,16 };
-//}
+
 
 int FantomVisualX;
 int FantomVisualY;
-
-//enum direction currentDirection;
 
 
 void initFantom() {
@@ -42,9 +23,6 @@ void initFantom() {
         ghostList[i].numero = i;
         ghostList[i].rects = malloc(sizeof(SDL_Rect) * 4);
         ghostList[i].ghost = (SDL_Rect) {400, 31, 32, 32};
-//        ghostList[i].VisualPositionX=ghostList[i].ghost.x/4;
-//        ghostList[i].VisualPositionY=ghostList[i].ghost.y/4;
-        //ghostList[i].currentDirection=RIGHT;
 
         SDL_Rect ghost = {4,
                           124 + i * (14 + 4),
@@ -65,9 +43,6 @@ void drawAllFantom(SDL_Surface *win_surf, SDL_Surface *plancheSprites, bool isMa
 }
 
 void drawFantom(SDL_Surface *win_surf, SDL_Surface *plancheSprites, struct Fantome *sprite, bool isMalveillanceMax) {
-//    if(isMalveillanceMax) {
-//        sprite->state = EATABLE;
-//    }
     SDL_Rect rect = {sprite->ghost.x, sprite->ghost.y, 32, 32};
 
     SDL_Rect *ghost_in;
@@ -101,36 +76,20 @@ void moveAllFantom(char (*map)[255][166], time_t elapsedTime) {
     deleteGhostFromGrid(map);
     changeFantomeState(elapsedTime);
     for (int i = 0; i < 4; i++) {
-        //printf("Move Fantome %d", ghostList[i].numero);
         isInHouse(&ghostList[i]);
         moveFantome(map, &ghostList[i]);
     }
 }
 
 void moveFantome(char (*map)[255][166], struct Fantome *sprite) {
-    //moveFantome(map);
     if (sprite->currentDirection == RIGHT) {
-        //if (contactMur(0, 1, map)) {
         sprite->ghost.x += 4;
-//                //isBlocked = false;
-//            } else
-//                isBlocked = true;
     } else if (sprite->currentDirection == LEFT) {
-//            if(contactMur(0,-1,map)) {
         sprite->ghost.x -= 4;
-//            }
-//            else
-//                isBlocked=true;
     } else if (sprite->currentDirection == UP) {
-//            if(contactMur(1,0,map))
         sprite->ghost.y -= 4;
-//            else
-//                isBlocked=true;
     } else if (sprite->currentDirection == DOWN) {
-//            if(contactMur(-1,0,map))
         sprite->ghost.y += 4;
-//            else
-//                isBlocked=true;
     }
     (*map)[sprite->ghost.y / 4][sprite->ghost.x / 4] = 'G';
 }
@@ -201,8 +160,6 @@ void TPghots(char (*map)[255][166]) {
 }
 
 void changementDirection(char map[][166]) {
-//    FantomVisualX=ghost.x/4;
-//    FantomVisualY=ghost.y/4;
     srand(time(NULL));
     for (int i = 0; i < 4; i++) {
 
@@ -237,61 +194,10 @@ void changementDirection(char map[][166]) {
             directionChoisie = choisirDirectionAlea(listeDirections, nbDirections);
         }
         ghostList[i].currentDirection = directionChoisie;
-        // Mise à jour des coordonnées selon la direction choisies
-        /*   switch (directionChoisie) {
-               case RIGHT:
-                   ghost.x++;
-                   break;
-               case LEFT:
-                   ghost.x--;
-                   break;
-               case UP:
-                   ghost.y++;
-                   break;
-               case DOWN:
-                   ghost.y--;
-                   break;
-           }*/
-
-
-// printf("Directions disponibles fantome %d : ", ghostList[i].numero);
-//    for (int i = 0; i < nbDirections; i++) {
-//        switch (listeDirections[i]) {
-//            case RIGHT:
-//                printf("RIGHT ");
-//                break;
-//            case LEFT:
-//                printf("LEFT ");
-//                break;
-//            case UP:
-//                printf("UP ");
-//                break;
-//            case DOWN:
-//                printf("DOWN ");
-//                break;
-//        }
-//    }
-//    printf("\n");
-//
-//    printf("Direction choisi : %d", directionChoisie);
 
         free(listeDirections);  // Libérer la mémoire allouée pour la liste des directions
     }
 }
-
-//void changeDirection()
-//{
-//    srand(time(NULL));
-//    // enum direction newDirection;
-//    while (isBlocked) {
-//
-//        // Initialization, should only be called once.
-//        currentDirection = rand() % 4;
-//        isBlocked=false;
-//        isBlocked=false;
-//    }
-//
-//}
 
 enum direction *directionsDisponibles(int y, int x, char map[][166], int *nbDirections, struct Fantome *sprite) {
     enum direction *listeDirections = malloc(
@@ -322,12 +228,8 @@ enum direction *directionsDisponibles(int y, int x, char map[][166], int *nbDire
                     break;
             }
 
-            //printf("%d - %d\n", newX, newY);
-
             // Vérification de contact avec un mur
             if (contactMur(newY, newX, map)) {
-                //printf("right");
-                //printf("\n%d\n",dir);
                 listeDirections[*nbDirections] = dir;  // Ajout de la direction à la liste
                 (*nbDirections)++;  // Incrémentation du nombre de directions disponibles
             }
@@ -351,30 +253,6 @@ enum direction getOppositeDirection(enum direction dir) {
 
     return -1;  // Valeur par défaut en cas de direction invalide
 }
-
-//void touch(char dir)
-//{
-//    if(dir=='l') {
-//        ghost.x--;
-//        currentDirection=LEFT;
-//    }
-//    else if (dir=='r') {
-//        ghost.x++;
-//        currentDirection=RIGHT;
-//    }
-//    else if (dir=='u')
-//    {
-//        ghost.y--;
-//        currentDirection=UP;
-//
-//    }
-//    else if (dir=='d')
-//    {
-//        ghost.y++;
-//        currentDirection=DOWN;
-//    }
-//
-//}
 
 enum direction trouverDistancePlusCourte(int pacmanX, int pacmanY, char map[][166], struct Fantome *sprite) {
     int nbDirections;
@@ -408,9 +286,7 @@ enum direction trouverDistancePlusCourte(int pacmanX, int pacmanY, char map[][16
         }
 
         // Calculer la distance la plus courte entre le prochain pixel et la position du Pacman
-        //Point source = {.y = newY, .x = newX};
         int distance = calculeDistanceEntre2points(pacmanX, pacmanY, newX, newY);
-//        printf("Fantome %d - Distance %d = %d\n", sprite->numero ,dir, distance);
         // Mettre à jour la distance minimale
         if (distance < distanceMin) {
             distanceMin = distance;
@@ -419,18 +295,13 @@ enum direction trouverDistancePlusCourte(int pacmanX, int pacmanY, char map[][16
     }
 
     free(listeDirections);  // Libérer la mémoire allouée pour la liste des directions
-    //printf("PacMan position : %d - %d \n", pacmanX,pacmanY);
-//    printf("Fantome position : %d - %d \n", sprite->VisualPositionX,sprite->VisualPositionY);
-//    printf("Plus courte direction : %d\n", plusCourteDirection);
     return plusCourteDirection;
 }
 
 double calculeDistanceEntre2points(int pacmanX, int pacmanY, int sourceX, int sourceY) {
     int deltaX = abs(pacmanX - sourceX);
     int deltaY = abs(pacmanY - sourceY);
-//    printf("delX = %d, delY = %d\n", deltaX, deltaY);
     double distance = sqrt(deltaX * deltaX + deltaY * deltaY);
-//    printf("distance = %d \n", distance);
     return distance;
 }
 
@@ -455,11 +326,6 @@ void changeFantomeState(time_t timeElapsed) {
         setAllFantomeState(PATROL);
         dernierChangement = timeElapsed;
     }
-
-//    for (int i = 0; i < 4; i++)
-//    {
-//        printf("Fantome %d state : %d\n", ghostList[i].numero, ghostList[i].state );
-//    }
 }
 
 void setAllFantomeState(enum fantomeState fantomeState) {

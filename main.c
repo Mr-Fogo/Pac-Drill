@@ -491,20 +491,10 @@ int main(int argc, char** argv)
 }
 void isMalveillanceTimer(time_t current, time_t lastChange)
 {
-    time_t elapsedTime = current - start;
 
-
-    printf("debut %ld\n", current);
-    printf("last %ld\n", lastChange);
-    //printf("elapsed time %ld\n", elapsedTime);
     if(isMalveillanceMax) {
-        //time_t dernierchangement=0;
-        //lastChange=current;
         time_t dernierchangement=current;
-        printf("dernier change %ld\n", dernierchangement);
-
         if (dernierchangement-lastChange >= 15) {
-            printf("hello");
             isMalveillanceMax = false;
             loadSong = true;
             quitEatbleState();

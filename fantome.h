@@ -40,8 +40,6 @@ struct Fantome
     SDL_Rect *rects;
     SDL_Rect ghost;
     enum fantomeState state;
-    bool eatable;
-
 };
 
 
@@ -50,17 +48,14 @@ struct Fantome
 
 
 void initFantom();
-void setFantomeAllEatable(bool eatable);
 void moveFantome(char (*map)[255][166], struct Fantome *sprite);
 void moveAllFantom(char (*map)[255][166],time_t elapsedTime);
 void drawFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites, struct Fantome *sprite, bool isMalveillanceMax);
 bool contactMur(int y,int x,char map[][166]);
-void changeDirection();
 void setALLFantomPositionAfterPacmanDied(char (*map)[255][166]);
 enum direction* directionsDisponibles(int y, int x, char map[][166], int *nbDirections, struct Fantome *sprite);
 void changementDirection(char map[][166]);
 enum direction choisirDirectionAlea(enum direction *listeDirections, int nbDirections);
-void touch(char dir);
 void TPghots(char (*map)[255][166]);
 enum direction getOppositeDirection(enum direction dir);
 double calculeDistanceEntre2points(int pacmanX, int pacmanY, int sourceX, int sourceY);
