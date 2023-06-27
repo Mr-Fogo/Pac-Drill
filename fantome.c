@@ -344,7 +344,7 @@ bool contactWithPacman(char (*map)[255][166],bool isMalveillanceMax,int* score)
                 if ((*map)[ghostList[a].VisualPositionY + i][ghostList[a].VisualPositionX + j] == 'P') {
                     if (ghostList[a].state==EATABLE) {
                         ghostList[a].state = EATEN;
-                        score+=100;
+                        (*score)+=100;
                     }
                     else if (ghostList[a].state==EATEN)
                     {

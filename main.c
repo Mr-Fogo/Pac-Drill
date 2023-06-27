@@ -6,12 +6,12 @@
 #include <time.h>
 
 
-SDL_Window* pWindow = NULL;
-SDL_Surface* win_surf = NULL;
-SDL_Surface* plancheSprites = NULL;
-SDL_Surface* plancheSpritesBackup = NULL;
-TTF_Font* gFont = NULL; // Police de caractères pour le texte
-TTF_Font* font = NULL; // Police de caractères pour le texte
+SDL_Window *pWindow = NULL;
+SDL_Surface *win_surf = NULL;
+SDL_Surface *plancheSprites = NULL;
+SDL_Surface *plancheSpritesBackup = NULL;
+TTF_Font *gFont = NULL; // Police de caractères pour le texte
+TTF_Font *font = NULL; // Police de caractères pour le texte
 
 bool showMenu = true;
 bool gameStarted = false;
@@ -32,17 +32,18 @@ SDL_Rect bg = {4, 4, 664, 856}; // ici scale x4
 SDL_Rect src_MenuPacman = {0, 0, 190, 50};
 SDL_Rect MenuPacman = {0, 0, 720, 200};
 // variables pour le son
-static Uint8* audio_pos; // global pointer to the audio buffer to be played
+static Uint8 *audio_pos; // global pointer to the audio buffer to be played
 static Uint32 audio_len; // remaining length of the sample we have to play
 
 char map[214][166];
 static Uint32 wav_length; // length of our sample
-static Uint8* wav_buffer; // buffer containing our audio file
+static Uint8 *wav_buffer; // buffer containing our audio file
 static SDL_AudioSpec wav_spec; // the specs of our piece of music
 time_t start, current, stop, lastChange;
 
 
-void renderText(const char* message, int posX, int posY);
+void renderText(const char *message, int posX, int posY);
+
 void my_audio_callback(void *userdata, Uint8 *stream, int len) {
     if (audio_len == 0)
         return;
@@ -52,6 +53,7 @@ void my_audio_callback(void *userdata, Uint8 *stream, int len) {
     audio_pos += len;
     audio_len -= len;
 }
+
 void cleanup() {
     // Libérer les ressources
     if (gFont != NULL) {
@@ -79,17 +81,16 @@ void cleanup() {
     freeGhosts();
 }
 
-void drawMenu()
-{
-    SDL_Color textColor = { 255, 255, 255 }; // Couleur du texte (blanc)
+void drawMenu() {
+    SDL_Color textColor = {255, 255, 255}; // Couleur du texte (blanc)
 
     // Effacer la fenêtre avec une couleur de fond
     SDL_FillRect(win_surf, NULL, SDL_MapRGB(win_surf->format, 0, 0, 0));
 
     // Affichage du premier texte du menu
     char menuText1[] = "Appuyez sur espace pour commencer";
-    SDL_Surface* menuSurface1 = TTF_RenderText_Solid(font, menuText1, textColor); // Surface du premier texte
-    SDL_Rect menuPos1 = { 115, 400 }; // Position du premier texte
+    SDL_Surface *menuSurface1 = TTF_RenderText_Solid(font, menuText1, textColor); // Surface du premier texte
+    SDL_Rect menuPos1 = {115, 400}; // Position du premier texte
     SDL_BlitSurface(menuSurface1, NULL, win_surf, &menuPos1); // Affichage du premier texte
     SDL_FreeSurface(menuSurface1); // Libération de la surface du premier texte
 
@@ -100,9 +101,8 @@ void drawMenu()
     SDL_SetColorKey(plancheSprites, true, 0);
 }
 
-void drawEndScreen()
-{
-    SDL_Color textColor = { 255, 255, 255 }; // Couleur du texte (blanc)
+void drawEndScreen() {
+    SDL_Color textColor = {255, 255, 255}; // Couleur du texte (blanc)
 
     // Effacer la fenêtre avec une couleur de fond
     SDL_FillRect(win_surf, NULL, SDL_MapRGB(win_surf->format, 0, 0, 0));
@@ -110,19 +110,19 @@ void drawEndScreen()
     char endText[50];
     sprintf(endText, "GAME OVER");
 
-    SDL_Surface* endSurface = TTF_RenderText_Solid(gFont, endText, textColor); // Surface du texte
-    SDL_Rect endPos = { 270, 400 }; // Position du texte
+    SDL_Surface *endSurface = TTF_RenderText_Solid(gFont, endText, textColor); // Surface du texte
+    SDL_Rect endPos = {270, 400}; // Position du texte
     SDL_BlitSurface(endSurface, NULL, win_surf, &endPos); // Affichage du texte
     SDL_FreeSurface(endSurface); // Libération de la surface du texte
 
     char scoreText[20]; // Texte du score
     sprintf(scoreText, "Score: %d", score);
-    renderText(scoreText, 270, 430 ); // Exemple : Afficher le score à la position (10, 10)
+    renderText(scoreText, 270, 430); // Exemple : Afficher le score à la position (10, 10)
 
 
     char levelText[20]; // Texte du score
     sprintf(levelText, "Niveau: %d", level);
-    renderText(levelText, 270, 460 ); // Exemple : Afficher le score à la position (10, 10)
+    renderText(levelText, 270, 460); // Exemple : Afficher le score à la position (10, 10)
 
     char timeText[20]; // Texte du temps
     // Obtenir le temps actuel
@@ -130,13 +130,14 @@ void drawEndScreen()
     int minutes = (elapsedTime % 3600) / 60;
     int seconds = elapsedTime % 60;
 
-    sprintf(timeText, "%02d:%02d",minutes, seconds);
-    renderText(timeText, 270, 490 ); // Afficher le temps formaté à la position (550, 350)
+    sprintf(timeText, "%02d:%02d", minutes, seconds);
+    renderText(timeText, 270, 490); // Afficher le temps formaté à la position (550, 350)
 
     SDL_SetColorKey(plancheSprites, false, 0);
     SDL_BlitScaled(plancheSprites, &src_MenuPacman, win_surf, &MenuPacman);
     SDL_SetColorKey(plancheSprites, true, 0);
 }
+
 void init() {
     pWindow = SDL_CreateWindow("PacMan", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 664, 856, SDL_WINDOW_SHOWN);
     win_surf = SDL_GetWindowSurface(pWindow);
@@ -159,6 +160,7 @@ void init() {
 
     createmap(plancheSprites, map);
 }
+
 void renderText(const char *message, int posX, int posY) {
     SDL_Color textColor = {255, 255, 255}; // Couleur du texte (blanc dans cet exemple)
     SDL_Surface *textSurface = TTF_RenderText_Solid(gFont, message, textColor); // Rendre le texte sur une surface
@@ -173,6 +175,7 @@ void renderText(const char *message, int posX, int posY) {
 
     SDL_FreeSurface(textSurface); // Libérer la surface du texte
 }
+
 void draw() {
     if (showMenu) {
         drawMenu();
@@ -195,64 +198,63 @@ void draw() {
         renderText(levelText, 550, 325); // Exemple : Afficher le score à la position (10, 10)
 
         char timeText[20]; // Texte du temps
-         // Obtenir le temps actuel
+        // Obtenir le temps actuel
         time_t elapsedTime = current - start; // Calculer le temps écoulé depuis le démarrage du jeu
         int minutes = (elapsedTime % 3600) / 60;
         int seconds = elapsedTime % 60;
 
-        sprintf(timeText, "%02d:%02d",minutes, seconds);
+        sprintf(timeText, "%02d:%02d", minutes, seconds);
         renderText(timeText, 550, 350); // Afficher le temps formaté à la position (550, 350)
-    }
-    else if (gameNextLevel)
-    {
-        SDL_Color textColor = { 255, 255, 255 }; // Couleur du texte (blanc)
+    } else if (gameNextLevel) {
+        SDL_Color textColor = {255, 255, 255}; // Couleur du texte (blanc)
 
         // Effacer la fenêtre avec une couleur de fond
         SDL_FillRect(win_surf, NULL, SDL_MapRGB(win_surf->format, 0, 0, 0));
         // Affichage du texte de fin
         char nextText[70];
         sprintf(nextText, "Appuyer sur espace pour lancer le prochain niveau");
-        SDL_Surface* nextSurface = TTF_RenderText_Solid(gFont, nextText, textColor); // Surface du texte
-        SDL_Rect nextPos = { 100, 400 }; // Position du texte
+        SDL_Surface *nextSurface = TTF_RenderText_Solid(gFont, nextText, textColor); // Surface du texte
+        SDL_Rect nextPos = {100, 400}; // Position du texte
         SDL_BlitSurface(nextSurface, NULL, win_surf, &nextPos); // Affichage du texte
         SDL_FreeSurface(nextSurface); // Libération de la surface du texte
         SDL_SetColorKey(plancheSprites, false, 0);
         SDL_BlitScaled(plancheSprites, &src_MenuPacman, win_surf, &MenuPacman);
         SDL_SetColorKey(plancheSprites, true, 0);
-    }
-    else if (gameEnded) {
+    } else if (gameEnded) {
         drawEndScreen();
     }
 
 }
-void handleTP()
-{
+
+void handleTP() {
     TPpacman(map);
     TPghots(map);
 }
-void PacManestMortWesh()
-{
-    setPacManPosition(325,478,map);
+
+void PacManestMortWesh() {
+    setPacManPosition(325, 478, map);
     setALLFantomPositionAfterPacmanDied(map);
     setAllFantomeState(PATROL);
     isMalveillanceMax = false;
     current = time(NULL);
     loadSong = true;
 }
-void NextLevel()
-{
+
+void NextLevel() {
     plancheSprites = SDL_LoadBMP("../pacman_sprites.bmp");
     createmap(plancheSprites, map);
-    setPacManPosition(325,478,map);
+    setPacManPosition(325, 478, map);
     setALLFantomPositionAfterPacmanDied(map);
     setAllFantomeState(PATROL);
     isMalveillanceMax = false;
     level++;
+    nbVies += 1;
     loadSong = true;
 
 }
+
 void swapSong() {
-    if(isMalveillanceMax && loadSong) {
+    if (isMalveillanceMax && loadSong) {
 
         SDL_CloseAudio();
         SDL_FreeWAV(wav_buffer);
@@ -266,8 +268,7 @@ void swapSong() {
         SDL_PauseAudio(0);
 
         loadSong = false;
-    } else if (!isMalveillanceMax && loadSong)
-    {
+    } else if (!isMalveillanceMax && loadSong) {
         SDL_CloseAudio();
         SDL_FreeWAV(wav_buffer);
         SDL_LoadWAV(MUS_PATH, &wav_spec, &wav_buffer, &wav_length);
@@ -282,6 +283,7 @@ void swapSong() {
         loadSong = false;
     }
 }
+
 void ResetAll() {
     plancheSprites = SDL_LoadBMP("../pacman_sprites.bmp");
     createmap(plancheSprites, map);
@@ -299,16 +301,14 @@ void ResetAll() {
     gameEnded = false;
     gameNextLevel = false;
 }
-int main(int argc, char** argv)
-{
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
-    {
+
+int main(int argc, char **argv) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
         fprintf(stderr, "Echec de l'initialisation de la SDL %s", SDL_GetError());
         return 1;
     }
 
-    if (TTF_Init() != 0)
-    {
+    if (TTF_Init() != 0) {
         fprintf(stderr, "Echec de l'initialisation de SDL_ttf: %s", TTF_GetError());
         SDL_Quit();
         return 1;
@@ -316,8 +316,7 @@ int main(int argc, char** argv)
 
     // Charger la police de caractères
     gFont = TTF_OpenFont("arial.ttf", 22);
-    if (gFont == NULL)
-    {
+    if (gFont == NULL) {
         fprintf(stderr, "Impossible de charger la police de caractères : %s", TTF_GetError());
         cleanup();
         return 1;
@@ -325,8 +324,7 @@ int main(int argc, char** argv)
 
     /* Load the WAV */
     // the specs, length and buffer of our wav are filled
-    if (SDL_LoadWAV(MUS_PATH, &wav_spec, &wav_buffer, &wav_length) == NULL)
-    {
+    if (SDL_LoadWAV(MUS_PATH, &wav_spec, &wav_buffer, &wav_length) == NULL) {
         cleanup();
         return 1;
     }
@@ -338,8 +336,7 @@ int main(int argc, char** argv)
     audio_len = wav_length; // copy file length
 
     /* Open the audio device */
-    if (SDL_OpenAudio(&wav_spec, NULL) < 0)
-    {
+    if (SDL_OpenAudio(&wav_spec, NULL) < 0) {
         fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
         cleanup();
         return 1;
@@ -351,16 +348,13 @@ int main(int argc, char** argv)
     init();
 
     bool quit = false;
-    struct nextDirection nextDirection = { 0, 0 };
+    struct nextDirection nextDirection = {0, 0};
     initFantom();
     setALLFantomPositionAfterPacmanDied(map);
-    while (!quit)
-    {
+    while (!quit) {
         SDL_Event event;
-        while (!quit && SDL_PollEvent(&event))
-        {
-            switch (event.type)
-            {
+        while (!quit && SDL_PollEvent(&event)) {
+            switch (event.type) {
                 case SDL_QUIT:
                     quit = true;
                     break;
@@ -370,11 +364,9 @@ int main(int argc, char** argv)
         }
 
         int nbk;
-        const Uint8* keys = SDL_GetKeyboardState(&nbk);
-        if (showMenu)
-        {
-            if (keys[SDL_SCANCODE_SPACE])
-            {
+        const Uint8 *keys = SDL_GetKeyboardState(&nbk);
+        if (showMenu) {
+            if (keys[SDL_SCANCODE_SPACE]) {
                 showMenu = false;
                 gameStarted = true; // La partie commence
                 gameNextLevel = false;
@@ -382,61 +374,47 @@ int main(int argc, char** argv)
             }
             draw();
             SDL_UpdateWindowSurface(pWindow);
-        }
-        else if(gameNextLevel)
-        {
-            if (keys[SDL_SCANCODE_SPACE])
-            {
+        } else if (gameNextLevel) {
+            if (keys[SDL_SCANCODE_SPACE]) {
                 showMenu = false;
                 gameNextLevel = false;
                 gameStarted = true; // La partie commence
             }
             draw();
             SDL_UpdateWindowSurface(pWindow);
-        }
-        else if (gameEnded)
-        {
+        } else if (gameEnded) {
             gameStarted = false;
             stop = time(NULL);
             if (keys[SDL_SCANCODE_ESCAPE]) {
                 quit = true;
-            }
-            else if (keys[SDL_SCANCODE_SPACE])
-            {
+            } else if (keys[SDL_SCANCODE_SPACE]) {
                 ResetAll();
             }
             draw();
             SDL_UpdateWindowSurface(pWindow);
-        }
-        else if (gameStarted)
-        {
+        } else if (gameStarted) {
             current = time(NULL);
 
-            if (keys[SDL_SCANCODE_ESCAPE])
-            {
+            if (keys[SDL_SCANCODE_ESCAPE]) {
 //                showMap(map);
 //                NextLevel();
 //                gameEnded = false;
 //                gameStarted = false;
 //                gameNextLevel = true;
             }
-            if (keys[SDL_SCANCODE_LEFT])
-            {
+            if (keys[SDL_SCANCODE_LEFT]) {
                 nextDirection.x = -1;
                 nextDirection.y = 0;
             }
-            if (keys[SDL_SCANCODE_RIGHT])
-            {
+            if (keys[SDL_SCANCODE_RIGHT]) {
                 nextDirection.x = 1;
                 nextDirection.y = 0;
             }
-            if (keys[SDL_SCANCODE_UP])
-            {
+            if (keys[SDL_SCANCODE_UP]) {
                 nextDirection.x = 0;
                 nextDirection.y = -1;
             }
-            if (keys[SDL_SCANCODE_DOWN])
-            {
+            if (keys[SDL_SCANCODE_DOWN]) {
                 nextDirection.x = 0;
                 nextDirection.y = 1;
             }
@@ -444,41 +422,39 @@ int main(int argc, char** argv)
             movePacmanbutBetter(vitesse, map, nextDirection.x, nextDirection.y);
             handleAnimation(compteurAnimation);
             compteurAnimation++;
-            moveAllFantom(map, current-start);            changementDirection(map);
+            moveAllFantom(map, current - start);
+            changementDirection(map);
             score += contactwithdollars(map);
-            isPacManDead = contactWithPacman(map,isMalveillanceMax,&score);
+            isPacManDead = contactWithPacman(map, isMalveillanceMax, &score);
             handleTP();
-            if(contactwithcut(map))
-            {
+            if (contactwithcut(map)) {
                 isMalveillanceMax = true;
-                lastChange =current-start;
+                lastChange = current - start;
                 setFantomeEatable();
                 loadSong = true;
             }
-            isMalveillanceTimer(current-start, lastChange);
+            isMalveillanceTimer(current - start, lastChange);
             draw();
             drawPacman(win_surf, plancheSprites);
-            drawAllFantom(win_surf, plancheSprites,isMalveillanceMax);
+            drawAllFantom(win_surf, plancheSprites, isMalveillanceMax);
 
             SDL_Delay(20); // ~50 fps use SDL_GetTicks64() pour plus de precision
             SDL_UpdateWindowSurface(pWindow);
             updateMap(plancheSprites, map);
-            setMapTheme(plancheSprites, map,isMalveillanceMax);
+            setMapTheme(plancheSprites, map, isMalveillanceMax);
             swapSong();
-            if(allDollarEat(map))
-            {
+            if (allDollarEat(map)) {
                 gameEnded = false;
                 gameStarted = false;
                 gameNextLevel = true;
                 NextLevel();
             }
             if (isPacManDead) {
-                if(nbVies > 0) {
+                if (nbVies > 0) {
                     nbVies--;
                     isPacManDead = false;
                     PacManestMortWesh();
-                }
-                else {
+                } else {
                     gameEnded = true;
                     gameStarted = false;
                 }
@@ -489,12 +465,12 @@ int main(int argc, char** argv)
     cleanup();
     return 0;
 }
-void isMalveillanceTimer(time_t current, time_t lastChange)
-{
 
-    if(isMalveillanceMax) {
-        time_t dernierchangement=current;
-        if (dernierchangement-lastChange >= 15) {
+void isMalveillanceTimer(time_t current, time_t lastChange) {
+
+    if (isMalveillanceMax) {
+        time_t dernierchangement = current;
+        if (dernierchangement - lastChange >= 15) {
             isMalveillanceMax = false;
             loadSong = true;
             quitEatbleState();
