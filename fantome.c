@@ -171,7 +171,7 @@ void changementDirection(char map[][166]) {
         enum direction *listeDirections = directionsDisponibles(0, 0, map, &nbDirections, &ghostList[i]);
         enum direction directionChoisie;
         if (ghostList[i].state == PATROL) {
-            ghostList[i].speed=3;
+            ghostList[i].speed=4;
             if (i == 0) {
                 directionChoisie = trouverDistancePlusCourte(40, 0, map, &ghostList[i]);
             } else if (i == 1) {
@@ -181,7 +181,7 @@ void changementDirection(char map[][166]) {
             } else
                 directionChoisie = trouverDistancePlusCourte(40, 166, map, &ghostList[i]);
         } else if (ghostList[i].state == CHASE) {
-            ghostList[i].speed=3;
+            ghostList[i].speed=4;
             if (i == 0) {
                 directionChoisie = trouverDistancePlusCourte(getPacmanX(map), getPacmanY(map), map, &ghostList[i]);
             } else if (i == 1) {
@@ -195,7 +195,7 @@ void changementDirection(char map[][166]) {
             ghostList[i].speed=4;
             directionChoisie = trouverDistancePlusCourte(79, 95, map, &ghostList[i]);
         } else if (ghostList[i].state == EATABLE) {
-            ghostList[i].speed=3;
+            ghostList[i].speed=4;
             directionChoisie = choisirDirectionAlea(listeDirections, nbDirections);
         }
         ghostList[i].currentDirection = directionChoisie;
