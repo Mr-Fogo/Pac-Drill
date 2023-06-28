@@ -45,7 +45,7 @@ struct Fantome
 
 void initFantom();
 void moveFantome(char (*map)[255][166], struct Fantome *sprite);
-void moveAllFantom(char (*map)[255][166],time_t elapsedTime);
+void moveAllFantom(char (*map)[255][166],time_t elapsedTime,bool isMLalveillance);
 void drawFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites, struct Fantome *sprite, bool isMalveillanceMax);
 bool contactMur(int y,int x,char map[][166]);
 void setALLFantomPositionAfterPacmanDied(char (*map)[255][166]);
@@ -58,7 +58,7 @@ double calculeDistanceEntre2points(int pacmanX, int pacmanY, int sourceX, int so
 enum direction trouverDistancePlusCourte(int pacmanX, int pacmanY, char map[][166], struct Fantome *sprite);
 void exportSprites(SDL_Rect *srcRect, SDL_Rect *destRect, int count, int xStep, int yStep);
 void drawAllFantom(SDL_Surface* win_surf, SDL_Surface* plancheSprites,bool isMalveillanceMax);
-void changeFantomeState(time_t time);
+void changeFantomeState(time_t time,bool isMLalveillance);
 void setAllFantomeState(enum fantomeState fantomeState);
 bool contactWithPacman(char (*map)[255][166],bool isMalveillanceMax,int* score);
 void isInHouse(struct Fantome *sprite);

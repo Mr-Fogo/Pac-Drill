@@ -73,9 +73,9 @@ bool contactMur(int y, int x, char map[][166]) {
     return contact;
 }
 
-void moveAllFantom(char (*map)[255][166], time_t elapsedTime) {
+void moveAllFantom(char (*map)[255][166], time_t elapsedTime, bool isMLalveillance) {
     deleteGhostFromGrid(map);
-    changeFantomeState(elapsedTime);
+    changeFantomeState(elapsedTime,isMLalveillance);
     for (int i = 0; i < 4; i++) {
         isInHouse(&ghostList[i]);
         moveFantome(map, &ghostList[i]);
@@ -319,17 +319,19 @@ void exportSprites(SDL_Rect *srcRect, SDL_Rect *destRect, int count, int xStep, 
     }
 }
 
-void changeFantomeState(time_t timeElapsed) {
+void changeFantomeState(time_t timeElapsed, bool isMLalveillance) {
 
     static time_t dernierChangement = 0;
 
-    if (ghostList[0].state == PATROL && (timeElapsed - dernierChangement >= 10)) {
-        setAllFantomeState(CHASE);
-        dernierChangement = timeElapsed;
+    if(!isMLalveillance) {
+        if (ghostList[0].state == PATROL && (timeElapsed - dernierChangement >= 10)) {
+            setAllFantomeState(CHASE);
+            dernierChangement = timeElapsed;
 
-    } else if (ghostList[0].state == CHASE && (timeElapsed - dernierChangement >= 20)) {
-        setAllFantomeState(PATROL);
-        dernierChangement = timeElapsed;
+        } else if (ghostList[0].state == CHASE && (timeElapsed - dernierChangement >= 20)) {
+            setAllFantomeState(PATROL);
+            dernierChangement = timeElapsed;
+        }
     }
 }
 
